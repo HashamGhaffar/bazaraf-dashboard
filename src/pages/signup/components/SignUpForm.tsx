@@ -5,11 +5,15 @@ import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
+import SimpleButton from "../../../components/simpleButton";
+import { useNavigate } from "react-router-dom";
 
 function SignUpForm() {
+  const navigate = useNavigate();
+
   return (
     <>
-      <Box sx={{ marginX: "20px", mt: 5 }}>
+      <Box sx={{ marginX: "15px", mt: 5 }}>
         <Box
           sx={{
             maxWidth: "690px",
@@ -36,18 +40,37 @@ function SignUpForm() {
               mt: 3,
             }}
           >
-            <InputField label="Name" Icon={PersonIcon} onChange={() => {}} />
-            <InputField label="Email" Icon={EmailIcon} onChange={() => {}} />
-            <InputField label="Password" Icon={LockIcon} onChange={() => {}} />
+            <InputField label="Name" Icon={PersonIcon} onChange={() => { }} />
+            <InputField label="Email" Icon={EmailIcon} onChange={() => { }} />
+            <InputField label="Password" Icon={LockIcon} onChange={() => { }} />
             <InputField
               label="Confirm Password"
               Icon={LockIcon}
-              onChange={() => {}}
+              onChange={() => { }}
             />
             <InputField
               label="Seller Type"
               Icon={StorefrontIcon}
-              onChange={() => {}}
+              onChange={() => { }}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: "20px",
+            }} >
+            <SimpleButton
+              text="SignUp"
+              sx={{
+                width: '465px',
+                height: '50px',
+                "@media (max-width: 500px)": {
+                  width: '400px'
+                },
+              }}
+              onClick={() => navigate('/dashBoard')}
             />
           </Box>
           <Box

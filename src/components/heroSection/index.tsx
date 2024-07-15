@@ -10,7 +10,7 @@ function HeroSection() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "100vw",
-          height: "calc(100vh - 100px)",
+          height: "calc(100vh - 100px)"
         }}
       >
         <Box
@@ -22,7 +22,14 @@ function HeroSection() {
         >
           <Typography
             variant="h2"
-            sx={{ color: "white", paddingTop: "20vh", marginLeft: "5vw" }}
+            sx={{ color: "white", paddingTop: "20vh", marginLeft: "5vw" ,
+              "@media (max-width: 500px)": {
+                display: 'flex',
+                textAlign: 'center',
+                fontSize: '50px',
+                fontWeight: '500'
+             },
+            }}
           >
             Make your shopping <br />
             better with. <br />

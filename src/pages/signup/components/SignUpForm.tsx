@@ -6,11 +6,30 @@ import LockIcon from "@mui/icons-material/Lock";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
 import SimpleButton from "../../../components/simpleButton";
-import { useNavigate } from "react-router-dom";
-
+// import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { ChangeEvent } from "react";
 function SignUpForm() {
-  const navigate = useNavigate();
-
+  // const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    fullName: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    sellerType: "",
+  });
+  console.log(formData, "formData");
+  const handelSingUp = async () => {
+    try {
+      //   navigate("/login");
+      // }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
+    setFormData({ ...formData, [name]: e.target.value });
+  };
   return (
     <>
       <Box sx={{ marginX: "15px", mt: 5 }}>
@@ -40,37 +59,50 @@ function SignUpForm() {
               mt: 3,
             }}
           >
-            <InputField label="Name" Icon={PersonIcon} onChange={() => { }} />
-            <InputField label="Email" Icon={EmailIcon} onChange={() => { }} />
-            <InputField label="Password" Icon={LockIcon} onChange={() => { }} />
+            <InputField
+              label="Name"
+              Icon={PersonIcon}
+              onChange={(e) => handleChange(e, "fullName")}
+            />
+            <InputField
+              label="User Name"
+              Icon={EmailIcon}
+              onChange={(e) => handleChange(e, "username")}
+            />
+            <InputField
+              label="Password"
+              Icon={LockIcon}
+              onChange={(e) => handleChange(e, "password")}
+            />
             <InputField
               label="Confirm Password"
               Icon={LockIcon}
-              onChange={() => { }}
+              onChange={(e) => handleChange(e, "confirmPassword")}
             />
             <InputField
               label="Seller Type"
               Icon={StorefrontIcon}
-              onChange={() => { }}
+              onChange={(e) => handleChange(e, "sellerType")}
             />
           </Box>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               padding: "20px",
-            }} >
+            }}
+          >
             <SimpleButton
               text="SignUp"
               sx={{
-                width: '465px',
-                height: '50px',
+                width: "465px",
+                height: "50px",
                 "@media (max-width: 500px)": {
-                  width: '400px'
+                  width: "400px",
                 },
               }}
-              onClick={() => navigate('/dashBoard')}
+              onClick={() => handelSingUp()}
             />
           </Box>
           <Box

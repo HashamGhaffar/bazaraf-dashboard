@@ -11,6 +11,7 @@ interface InputFieldProps {
   onChange: (value: string) => void;
   Icon?: React.ElementType;
   showSwitch?: boolean;
+  type?: string;
 }
 
 const CustomInputField: React.FC<InputFieldProps> = ({
@@ -20,6 +21,7 @@ const CustomInputField: React.FC<InputFieldProps> = ({
   onChange,
   Icon,
   showSwitch = false,
+  type = "default",
 }) => {
   const [value, setValue] = useState("");
 
@@ -39,15 +41,15 @@ const CustomInputField: React.FC<InputFieldProps> = ({
       <Paper
         component="form"
         sx={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           p: 1,
           borderRadius: "10px",
           borderColor: "grey.400",
           boxShadow: "none",
           borderWidth: "1px",
           borderStyle: "solid",
-          height: '50px' 
+          height: "50px",
         }}
       >
         {Icon && (
@@ -56,6 +58,7 @@ const CustomInputField: React.FC<InputFieldProps> = ({
           </IconButton>
         )}
         <InputBase
+          type={type}
           sx={{ ml: 1, flex: 1 }}
           placeholder=""
           value={value}

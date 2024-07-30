@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import { Box, InputLabel, SxProps, Theme } from "@mui/material";
-
+import { ChangeEvent } from "react";
 interface InputFieldProps {
   label: string;
   iconColor?: string;
   sx?: SxProps<Theme>;
-  onChange: (value: string) => void;
+  onChange: (value: ChangeEvent<HTMLInputElement>) => void;
   Icon?: React.ElementType;
+  value?: string | number | undefined;
+  errorMessage?: string;
+  type?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -18,12 +21,12 @@ const InputField: React.FC<InputFieldProps> = ({
   sx,
   onChange,
   Icon,
+  errorMessage,
+  value,
+  type,
 }) => {
-  const [value, setValue] = useState("");
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-    onChange(event.target.value);
+    onChange(event);
   };
 
   return (
@@ -34,12 +37,21 @@ const InputField: React.FC<InputFieldProps> = ({
       }}
     >
       <Box sx={sx} mt={1}>
-        <InputLabel
-          htmlFor="input-with-icon-adornment"
-          sx={{ fontSize: "16px", fontWeight: "400", color: "grey.400" }}
+        <Box
+          flexDirection={"row"}
+          justifyContent={"space-between"}
+          display={"flex"}
         >
-          {label}
-        </InputLabel>
+          <InputLabel
+            htmlFor="input-with-icon-adornment"
+            sx={{ fontSize: "16px", fontWeight: "400", color: "grey.400" }}
+          >
+            {label}
+          </InputLabel>
+          {errorMessage && (
+            <Box sx={{ color: "error.main" }}>{errorMessage}</Box>
+          )}
+        </Box>
         <Paper
           component="form"
           sx={{
@@ -59,6 +71,7 @@ const InputField: React.FC<InputFieldProps> = ({
             sx={{ ml: 1 }}
             placeholder=""
             value={value}
+            type={type}
             onChange={handleChange}
           />
         </Paper>

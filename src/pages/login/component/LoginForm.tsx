@@ -15,8 +15,8 @@ import {
 import { useNavigate } from "react-router-dom";
 function LoginForm() {
   const [formData, setFormData] = useState({
-    username: "khan@gmail.com",
-    password: "khan#123",
+    username: "",
+    password: "",
   });
   const [errors, setErrors] = useState({
     usernameError: "",

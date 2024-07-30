@@ -41,7 +41,7 @@ const PrivateRoute = ({ element }: { element: JSX.Element }) => {
 
 const AuthRoute = ({ element }: { element: JSX.Element }) => {
   const { accessToken } = useSelector((state: RootState) => state.auth);
-  return accessToken ? <Navigate to="/profile" /> : element;
+  return accessToken ? <Navigate to="/dashBoard" /> : element;
 };
 
 function App() {

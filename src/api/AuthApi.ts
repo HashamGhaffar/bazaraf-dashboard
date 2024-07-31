@@ -19,21 +19,14 @@ const authLoginUser = async (
   authRequest: AuthRequest
 ): Promise<AuthResponse> => {
   const endpointUrl = `${API_URL}/api/v1/login`;
-  console.log("authRequest");
   try {
-    console.log("authRequest1111", authRequest);
-
     const response: AxiosResponse<AuthResponse> = await axios.post(
       endpointUrl,
       authRequest
     );
-    console.log("authRequest222");
-
-    console.log(response.data, "response.data");
     return response.data;
   } catch (error) {
-    console.log(error, "error");
-    throw handleError(error as AxiosError);
+    return error?.response;
   }
 };
 

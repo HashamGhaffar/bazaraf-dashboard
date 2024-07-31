@@ -75,6 +75,7 @@ const Profile: React.FC = () => {
       user,
       restaurant?.restaurantId
     );
+    console.log(response);
     setRestaurantData(response);
     if (response) {
       setFormData({
@@ -114,6 +115,17 @@ const Profile: React.FC = () => {
           [e.target.name]: e.target.value,
         },
       });
+    } else if (name === "openingHours") {
+      const timeValue = e.target.value; // "18:20"
+      const [hours, minutes] = timeValue.split(":");
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      date.setSeconds(0);
+      date.setMilliseconds(0);
+      const isoString = date.toISOString(); // "2024-07-31T03:59:30.532Z"
+      console.log("isoString", isoString);
+      setFormData({ ...formData, [name]: isoString });
     } else {
       setFormData({ ...formData, [name]: e.target.value });
     }
@@ -125,54 +137,109 @@ const Profile: React.FC = () => {
     const { name, slogan, licenseNumber, phoneNumber, address } = formData;
     const errorsCopy = { ...errors };
 
-    if (!name) {
-      errorsCopy.nameError = "Name is required";
-      valid = false;
-    } else {
-      errorsCopy.nameError = "";
-    }
-    if (!slogan) {
-      errorsCopy.sloganError = "Slogan is required";
-      valid = false;
-    } else {
-      errorsCopy.sloganError = "";
-    }
-    if (!licenseNumber) {
-      errorsCopy.licenseNumberError = "License Number is required";
-      valid = false;
-    } else {
-      errorsCopy.licenseNumberError = "";
-    }
-    if (!phoneNumber) {
-      errorsCopy.phoneNumberError = "Phone Number is required";
-      valid = false;
-    } else {
-      errorsCopy.phoneNumberError = "";
-    }
-    if (!address.address) {
-      errorsCopy.addressError = "Address is required";
-      valid = false;
-    } else {
-      errorsCopy.addressError = "";
-    }
+    const validationRules = [
+      { field: name, errorKey: "nameError", errorMessage: "Name is required" },
+      {
+        field: slogan,
+        errorKey: "sloganError",
+        errorMessage: "Slogan is required",
+      },
+      {
+        field: licenseNumber,
+        errorKey: "licenseNumberError",
+        errorMessage: "License Number is required",
+      },
+      {
+        field: phoneNumber,
+        errorKey: "phoneNumberError",
+        errorMessage: "Phone Number is required",
+      },
+      {
+        field: address.address,
+        errorKey: "addressError",
+        errorMessage: "Address is required",
+      },
+    ];
+
+    validationRules.forEach(({ field, errorKey, errorMessage }) => {
+      if (!field) {
+        errorsCopy[errorKey] = errorMessage;
+        valid = false;
+      } else {
+        errorsCopy[errorKey] = "";
+      }
+    });
+
     setErrors(errorsCopy);
+    return valid;
   };
+
+  // const validateForm = () => {
+  //   let valid = true;
+
+  //   const { name, slogan, licenseNumber, phoneNumber, address } = formData;
+  //   const errorsCopy = { ...errors };
+
+  //   if (!name) {
+  //     errorsCopy.nameError = "Name is required";
+  //     valid = false;
+  //   } else {
+  //     errorsCopy.nameError = "";
+  //   }
+  //   if (!slogan) {
+  //     errorsCopy.sloganError = "Slogan is required";
+  //     valid = false;
+  //   } else {
+  //     errorsCopy.sloganError = "";
+  //   }
+  //   if (!licenseNumber) {
+  //     errorsCopy.licenseNumberError = "License Number is required";
+  //     valid = false;
+  //   } else {
+  //     errorsCopy.licenseNumberError = "";
+  //   }
+  //   if (!phoneNumber) {
+  //     errorsCopy.phoneNumberError = "Phone Number is required";
+  //     valid = false;
+  //   } else {
+  //     errorsCopy.phoneNumberError = "";
+  //   }
+  //   if (!address.address) {
+  //     errorsCopy.addressError = "Address is required";
+  //     valid = false;
+  //   } else {
+  //     errorsCopy.addressError = "";
+  //   }
+  //   setErrors(errorsCopy);
+  // };
   const handelSubmit = async () => {
-    validateForm();
-    const response = restaurantData
-      ? await updateRestaurant(
-          accessToken,
-          user,
-          restaurant.restaurantId,
-          formData as any
-        )
-      : createRestaurant(accessToken, user, formData);
-    console.log(response);
-    toast.success(
-      restaurantData
-        ? "Restaurant Updated Successfully"
-        : "Restaurant Created Successfully"
-    );
+    const res = validateForm();
+    if (res) {
+      toast.error("Please fill all the required fields");
+    } else {
+      console.log("payload", formData);
+      const response = restaurantData
+        ? await updateRestaurant(
+            accessToken,
+            user,
+            restaurant.restaurantId,
+            formData as any
+          )
+        : createRestaurant(accessToken, user, formData);
+      console.log("Response", response);
+      toast.success(
+        restaurantData
+          ? "Restaurant Updated Successfully"
+          : "Restaurant Created Successfully"
+      );
+    }
+  };
+
+  const formatTime = (isoString) => {
+    const date = new Date(isoString);
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
   };
 
   return (
@@ -250,16 +317,29 @@ const Profile: React.FC = () => {
               gap: 1,
             }}
           >
-            <CustomInputField
+            <InputField
+              type="time"
+              label="Opening Hours"
+              Icon={LocationIcon}
+              onChange={(e) => handleChange(e, "openingHours")}
+              value={formatTime(formData.openingHours)}
+            />
+            <InputField
+              label="Delivery Time"
+              Icon={LocationIcon}
+              onChange={(e) => handleChange(e, "deliveryTime")}
+              value={formData.deliveryTime}
+            />
+            {/* <CustomInputField
               label="Opening Hours"
               Icon={UpdateIcon}
-              onChange={() => {}}
+              onChange={(e) => handleChange(e, "openingHours")}
             />
             <CustomInputField
               label="Delivery Time"
               Icon={AccessTimeIcon}
-              onChange={() => {}}
-            />
+              onChange={(e) => handleChange(e, "deliveryTime")}
+            /> */}
           </Box>
           <Box
             sx={{
@@ -283,6 +363,7 @@ const Profile: React.FC = () => {
                 <CustomCheckbox
                   label={"DriveThru"}
                   required={!formData.hasDriveThru}
+                  value={formData.hasDriveThru}
                   onChange={() => {
                     setFormData({
                       ...formData,
@@ -295,6 +376,7 @@ const Profile: React.FC = () => {
                 <CustomCheckbox
                   label={"DineIn"}
                   required={formData.hasDineIn}
+                  value={formData.hasDineIn}
                   onChange={() => {
                     setFormData({
                       ...formData,
@@ -307,6 +389,7 @@ const Profile: React.FC = () => {
                 <CustomCheckbox
                   label={"PickUp"}
                   required={formData.hasTakeAway}
+                  value={formData.hasTakeAway}
                   onChange={() => {
                     setFormData({
                       ...formData,
@@ -319,6 +402,7 @@ const Profile: React.FC = () => {
                 <CustomCheckbox
                   label={"Delivery"}
                   required={formData.hasDelivery}
+                  value={formData.hasDelivery}
                   onChange={() => {
                     setFormData({
                       ...formData,

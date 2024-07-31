@@ -13,6 +13,7 @@ import {
   setUser,
 } from "../../../store/AuthSlice/index";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 function LoginForm() {
   const [formData, setFormData] = useState({
     username: "",
@@ -63,13 +64,15 @@ function LoginForm() {
     try {
       console.log(formData, "formData");
       const response = await authLoginUser(formData);
-
-      console.log(response, "response");
-      dispatch(setAccessToken(response?.accessToken || ""));
-      dispatch(setRefreshToken(response?.refreshToken || ""));
-      dispatch(setUser(response?.userId || ""));
-      if (response) {
-        navigate("/dashBoard");
+      if (response.accessToken) {
+        dispatch(setAccessToken(response?.accessToken || ""));
+        dispatch(setRefreshToken(response?.refreshToken || ""));
+        dispatch(setUser(response?.userId || ""));
+        if (response) {
+          navigate("/dashBoard");
+        }
+      } else {
+        toast.error(response.data);
       }
     } catch (error) {
       console.log(error, "error");
@@ -98,7 +101,7 @@ function LoginForm() {
             Login
           </Typography>
           <Typography textAlign={"center"} fontSize={16} lineHeight={"24px"}>
-            Don't have an account? Signup
+            Don't have an account? SignUp
           </Typography>
           <Box
             sx={{
@@ -113,6 +116,7 @@ function LoginForm() {
             />
             <InputField
               label="Password"
+              type="password"
               Icon={LockIcon}
               onChange={(e) => handleChange(e, "password")}
               errorMessage={errors.passwordError}

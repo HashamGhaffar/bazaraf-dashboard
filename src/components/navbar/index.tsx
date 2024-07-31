@@ -58,9 +58,14 @@ export default function Navbar({ isShowButtons }: { isShowButtons?: boolean }) {
                 },
               }}
             >
-              <img src={MenuBar} alt="Menu" style={{ width: '24px', height: '24px' }} />
+              <img
+                src={MenuBar}
+                alt="Menu"
+                style={{ width: "24px", height: "24px" }}
+              />
             </IconButton>
-            <img src={Logo} alt="Logo" style={{ height: '50px' }} />
+
+            <img src={Logo} alt="Logo" style={{ height: "50px" }} />
           </Box>
 
           {isShowButtons && (
@@ -68,9 +73,9 @@ export default function Navbar({ isShowButtons }: { isShowButtons?: boolean }) {
               sx={{
                 display: "flex",
                 gap: 3,
-                alignItems: 'center',
+                alignItems: "center",
                 "@media (max-width: 500px)": {
-                  flexDirection: 'row',
+                  flexDirection: "row",
                   gap: 1,
                 },
               }}
@@ -89,11 +94,11 @@ export default function Navbar({ isShowButtons }: { isShowButtons?: boolean }) {
                   "@media (max-width: 600px)": {
                     width: "90px",
                     height: "40px",
-                    fontSize: '16px',
-                    mr: 1
+                    fontSize: "16px",
+                    mr: 1,
                   },
                 }}
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
               />
               <SimpleButton
                 text="Signup"
@@ -101,11 +106,11 @@ export default function Navbar({ isShowButtons }: { isShowButtons?: boolean }) {
                   "@media (max-width: 600px)": {
                     width: "90px",
                     height: "40px",
-                    fontSize: '16px',
-                    mr: 1
+                    fontSize: "16px",
+                    mr: 1,
                   },
                 }}
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate("/signup")}
               />
             </Box>
           )}

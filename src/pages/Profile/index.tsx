@@ -12,12 +12,9 @@ import SloganIcon from "@mui/icons-material/EmojiObjects";
 import LicenseIcon from "@mui/icons-material/Assignment";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LocationIcon from "@mui/icons-material/LocationOn";
-import UpdateIcon from "@mui/icons-material/Update";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import InputField from "../../components/inputField";
 import SimpleButton from "../../components/simpleButton";
 import CustomCheckbox from "../../components/checkbox/Checkbox";
-import CustomInputField from "../../components/inputField/CustomInputField";
 import {
   getRestaurant,
   updateRestaurant,
@@ -31,7 +28,9 @@ const Profile: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [restaurantData, setRestaurantData] = React.useState<any>();
-  const [errors, setErrors] = React.useState({
+  const [errors, setErrors] = React.useState<{
+    [key: string]: string;
+  }>({
     nameError: "",
     sloganError: "",
     licenseNumberError: "",
@@ -81,7 +80,7 @@ const Profile: React.FC = () => {
       setFormData({
         name: response.name,
         slogan: response.slogan,
-        licenseNumber: response.licenseNumber,
+        licenseNumber: response?.licenseNumber || "",
         address: {
           addressId: response.address.addressId,
           city: response.address.city,
@@ -108,26 +107,30 @@ const Profile: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     if (name === "address") {
-      setFormData({
-        ...formData,
+      setFormData((prevFormData) => ({
+        ...prevFormData,
         address: {
-          ...formData.address,
-          [e.target.name]: e.target.value,
+          ...prevFormData.address,
+          [name]: e.target.value,
         },
-      });
+      }));
     } else if (name === "openingHours") {
       const timeValue = e.target.value; // "18:20"
       const [hours, minutes] = timeValue.split(":");
       const date = new Date();
-      date.setHours(hours);
-      date.setMinutes(minutes);
+      date.setHours(Number(hours));
+      date.setMinutes(Number(minutes));
+      date.setMinutes(Number(minutes));
       date.setSeconds(0);
       date.setMilliseconds(0);
       const isoString = date.toISOString(); // "2024-07-31T03:59:30.532Z"
       console.log("isoString", isoString);
-      setFormData({ ...formData, [name]: isoString });
+      setFormData((prevFormData) => ({ ...prevFormData, [name]: isoString }));
     } else {
-      setFormData({ ...formData, [name]: e.target.value });
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: e.target.value,
+      }));
     }
   };
 
@@ -174,47 +177,9 @@ const Profile: React.FC = () => {
     return valid;
   };
 
-  // const validateForm = () => {
-  //   let valid = true;
-
-  //   const { name, slogan, licenseNumber, phoneNumber, address } = formData;
-  //   const errorsCopy = { ...errors };
-
-  //   if (!name) {
-  //     errorsCopy.nameError = "Name is required";
-  //     valid = false;
-  //   } else {
-  //     errorsCopy.nameError = "";
-  //   }
-  //   if (!slogan) {
-  //     errorsCopy.sloganError = "Slogan is required";
-  //     valid = false;
-  //   } else {
-  //     errorsCopy.sloganError = "";
-  //   }
-  //   if (!licenseNumber) {
-  //     errorsCopy.licenseNumberError = "License Number is required";
-  //     valid = false;
-  //   } else {
-  //     errorsCopy.licenseNumberError = "";
-  //   }
-  //   if (!phoneNumber) {
-  //     errorsCopy.phoneNumberError = "Phone Number is required";
-  //     valid = false;
-  //   } else {
-  //     errorsCopy.phoneNumberError = "";
-  //   }
-  //   if (!address.address) {
-  //     errorsCopy.addressError = "Address is required";
-  //     valid = false;
-  //   } else {
-  //     errorsCopy.addressError = "";
-  //   }
-  //   setErrors(errorsCopy);
-  // };
   const handelSubmit = async () => {
     const res = validateForm();
-    if (res) {
+    if (res && !restaurantData) {
       toast.error("Please fill all the required fields");
     } else {
       console.log("payload", formData);
@@ -235,7 +200,7 @@ const Profile: React.FC = () => {
     }
   };
 
-  const formatTime = (isoString) => {
+  const formatTime = (isoString: string | number | Date) => {
     const date = new Date(isoString);
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -330,16 +295,6 @@ const Profile: React.FC = () => {
               onChange={(e) => handleChange(e, "deliveryTime")}
               value={formData.deliveryTime}
             />
-            {/* <CustomInputField
-              label="Opening Hours"
-              Icon={UpdateIcon}
-              onChange={(e) => handleChange(e, "openingHours")}
-            />
-            <CustomInputField
-              label="Delivery Time"
-              Icon={AccessTimeIcon}
-              onChange={(e) => handleChange(e, "deliveryTime")}
-            /> */}
           </Box>
           <Box
             sx={{

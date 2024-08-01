@@ -27,17 +27,20 @@ const Modifiers: React.FC = () => {
   const initialData = editingModifier?.modifier;
   const modifierId = editingModifier?.modifierId;
 
+  console.log("initialData", initialData);
+
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
     description: initialData?.description || "",
-    priceChange: initialData?.priceChange,
+    priceChange: initialData?.priceChange ?? 0,
   });
+  console.log("formData.priceChange", formData.priceChange);
 
   useEffect(() => {
     setFormData({
       name: initialData?.name || "",
       description: initialData?.description || "",
-      priceChange: initialData?.priceChange || "",
+      priceChange: initialData?.priceChange ?? 0,
     });
   }, [initialData]);
 
@@ -133,7 +136,7 @@ const Modifiers: React.FC = () => {
             textAlign={"center"}
             sx={{ pt: 0, pb: 1 }}
           >
-            Modifiers
+            Modifier
           </Typography>
         </Box>
         <Box sx={{ mt: 2 }}>
@@ -144,7 +147,7 @@ const Modifiers: React.FC = () => {
             value={formData.name}
           />
           <DescriptionField
-            label="Descripation"
+            label="Description"
             value={formData.description}
             onChange={(e) => handleChange(e, "description")}
             rows={4}

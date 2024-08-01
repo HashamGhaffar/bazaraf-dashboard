@@ -42,30 +42,37 @@ const ModifierList: React.FC = () => {
   const minData = [1, 2, 3];
   const maxData = [4, 5, 6];
 
-  const insitialData = editingModifierList?.modifierList;
+  const initialData = editingModifierList?.modifierList;
   const [formData, setFormData] = React.useState({
-    name: insitialData?.name || "",
-    description: insitialData?.description || "",
-    imageUrl: insitialData?.imageUrl || "",
-    isRequired: insitialData?.isRequired || false,
-    minQuantity: insitialData?.minQuantity || 0,
-    maxQuantity: insitialData?.maxQuantity || 0,
-    modifiers: insitialData?.modifiers || [],
+    name: initialData?.name || "",
+    description: initialData?.description || "",
+    imageUrl: initialData?.imageUrl || "",
+    isRequired: initialData?.isRequired || false,
+    minQuantity: initialData?.minQuantity || 0,
+    maxQuantity: initialData?.maxQuantity || 0,
+    modifiers: initialData?.modifiers || [],
   });
+
   const { restaurant, accessToken } = useSelector(
     (state: RootState) => state.auth
   );
+
+  console.log("modifierList", editingModifierList);
+
   useEffect(() => {
-    setFormData({
-      name: insitialData?.name || "",
-      description: insitialData?.description || "",
-      imageUrl: insitialData?.imageUrl || "",
-      isRequired: insitialData?.isRequired || false,
-      minQuantity: insitialData?.minQuantity || 0,
-      maxQuantity: insitialData?.maxQuantity || 0,
-      modifiers: insitialData?.modifiers || [],
-    });
-  }, [insitialData]);
+    if (initialData) {
+      setFormData({
+        name: initialData.name,
+        description: initialData.description || "",
+        imageUrl: initialData.imageUrl || "",
+        isRequired: initialData.isRequired || false,
+        minQuantity: initialData.minQuantity || 0,
+        maxQuantity: initialData.maxQuantity || 0,
+        modifiers: initialData.modifiers || [],
+      });
+    }
+  }, [initialData]);
+
   const handelSubmit = async () => {
     try {
       startLoading();
@@ -110,39 +117,15 @@ const ModifierList: React.FC = () => {
   };
 
   return (
-    <Box sx={{ marginX: "15px" }}>
-      <Box
-        sx={{
-          maxWidth: "690px",
-          margin: "0 auto",
-          borderRadius: "8px",
-          boxShadow: "0px 0px 4px 0px #00000040",
-          padding: "20px",
-        }}
-      >
-        <Box
-          sx={{
-            marginTop: "20px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
+    <Box sx={styles.container}>
+      <Box sx={styles.box}>
+        <Box sx={styles.avatarContainer}>
           <Avatar
             alt="Modifier-list"
             src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
+            sx={styles.avatar}
           />
-          <Typography
-            fontWeight={"600"}
-            fontSize={"40px"}
-            lineHeight={"54px"}
-            textAlign={"center"}
-            sx={{ pt: 0, pb: 1 }}
-          >
-            Modifier List
-          </Typography>
+          <Typography sx={styles.title}>Modifier List</Typography>
         </Box>
         <Box sx={{ mt: 2 }}>
           <InputField
@@ -162,16 +145,7 @@ const ModifierList: React.FC = () => {
             rows={4}
             required
           />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              ml: isMobile ? 0 : 11,
-              width: isMobile ? "355px" : "470px",
-              gap: 1,
-              mt: 3,
-            }}
-          >
+          <Box sx={styles.dropdownContainer(isMobile)}>
             <DropdownComponent
               value={formData.minQuantity}
               title="min"
@@ -200,22 +174,10 @@ const ModifierList: React.FC = () => {
               onChange={(e) => {
                 setFormData({ ...formData, isRequired: e.target.checked });
               }}
-              sx={{
-                maxWidth: "150px",
-                border: "1px solid grey.400",
-                borderRadius: "10px",
-                padding: "2px",
-                ml: 1,
-              }}
+              sx={styles.checkbox}
             />
           </Box>
-          <Box
-            sx={{
-              width: isMobile ? "355px" : "470px",
-              margin: "0 auto",
-              mt: 3,
-            }}
-          >
+          <Box sx={styles.dropdownWrapper(isMobile)}>
             <DropdownComponent
               title="Select Modifier"
               value={
@@ -227,105 +189,51 @@ const ModifierList: React.FC = () => {
                 const name = e.target.value;
                 const modifier = data.find((item) => item.name === name);
 
-                setFormData({
-                  ...formData,
-                  modifiers: [...formData.modifiers, modifier as any],
-                });
+                if (
+                  modifier &&
+                  !formData.modifiers.some((mod) => mod.name === name)
+                ) {
+                  setFormData({
+                    ...formData,
+                    modifiers: [
+                      ...formData.modifiers,
+                      { ...modifier, restaurant },
+                    ],
+                  });
+                }
               }}
               data={data.map((modifier) => modifier.name)}
             />
+            <Box gap={1}>
+              {formData.modifiers.map((modifier) => (
+                <Box
+                  sx={styles.tag}
+                  key={modifier.name}
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      modifiers: formData.modifiers.filter(
+                        (mod) => mod.name !== modifier.name
+                      ),
+                    });
+                  }}
+                >
+                  <Typography fontSize={14}>{modifier.name}</Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
-
-          {formData.modifiers.map((modifier) => {
-            return (
-              <SimpleButton
-                text={modifier.name}
-                sx={{
-                  flex: "0 0 auto",
-                  width: "230px",
-                  margin: "10px",
-                  height: "43px",
-                  color: "black",
-                  backgroundColor: "#D9D9D9",
-                  fontSize: "18px",
-                  fontWeight: "400",
-                  "&:hover": {
-                    backgroundColor: "#D9D9D9",
-                    color: "black",
-                  },
-                  "@media (max-width: 500px)": {
-                    width: "170px",
-                  },
-                }}
-                onClick={() => ""}
-              />
-            );
-          })}
-          {/* <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              ml: isMobile ? 0 : 11,
-              width: isMobile ? "355px" : "470px",
-              gap: 1,
-              mt: 3,
-              scrollbarWidth: "none",
-              scrollBehavior: "revert",
-              overflowX: "auto",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <SimpleButton
-              text="Pakola"
-              sx={{
-                flex: "0 0 auto",
-                width: "230px",
-                height: "43px",
-                backgroundColor: "#D9D9D9",
-                color: "black",
-                fontSize: "18px",
-                fontWeight: "400",
-                "&:hover": {
-                  backgroundColor: "#D9D9D9",
-                  color: "black",
-                },
-                "@media (max-width: 500px)": {
-                  width: "170px",
-                },
-              }}
-              onClick={() => ""}
-            />
-          </Box> */}
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
+        <Box sx={styles.buttonContainer}>
           <SimpleButton
             loading={loading}
             text={editingModifierList?.modifierListId ? "Update" : "Save"}
             sx={{ width: "465px", height: "50px" }}
-            onClick={() => {
-              handelSubmit();
-            }}
+            onClick={handelSubmit}
           />
         </Box>
       </Box>
-      <Box
-        sx={{
-          maxWidth: "730px",
-          margin: "0 auto",
-          padding: "20px",
-          "@media (max-width: 500px)": {
-            padding: "0px",
-            mt: 2,
-          },
-        }}
-      >
+      <Box sx={styles.listContainer}>
         <ListComponent
           id="modifierListId"
           editHandel={editModifierList}
@@ -338,3 +246,92 @@ const ModifierList: React.FC = () => {
 };
 
 export default ModifierList;
+
+const styles = {
+  container: {
+    marginX: "15px",
+  },
+  tag: {
+    px: 3,
+    py: 1,
+    m: 1,
+    borderRadius: "10px",
+    backgroundColor: "#D9D9D9",
+    display: "inline-block",
+  },
+  box: {
+    maxWidth: "690px",
+    margin: "0 auto",
+    borderRadius: "8px",
+    boxShadow: "0px 0px 4px 0px #00000040",
+    padding: "20px",
+  },
+  avatarContainer: {
+    marginTop: "20px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+  },
+  title: {
+    fontWeight: 600,
+    fontSize: "40px",
+    lineHeight: "54px",
+    textAlign: "center",
+    paddingTop: 0,
+    paddingBottom: 1,
+  },
+  dropdownContainer: (isMobile: boolean) => ({
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: isMobile ? 0 : 11,
+    width: isMobile ? "355px" : "470px",
+    gap: 1,
+    marginTop: 3,
+  }),
+  checkbox: {
+    maxWidth: "150px",
+    border: "1px solid grey.400",
+    borderRadius: "10px",
+    padding: "2px",
+    marginLeft: 1,
+  },
+  dropdownWrapper: (isMobile: boolean) => ({
+    width: isMobile ? "355px" : "470px",
+    margin: "0 auto",
+    marginTop: 3,
+  }),
+  simpleButton: (isMobile: boolean) => ({
+    flex: "0 0 auto",
+    width: isMobile ? "170px" : "230px",
+    margin: "10px",
+    height: "43px",
+    color: "black",
+    backgroundColor: "#D9D9D9",
+    fontSize: "18px",
+    fontWeight: 400,
+    "&:hover": {
+      backgroundColor: "#D9D9D9",
+      color: "black",
+    },
+  }),
+  buttonContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+  },
+  listContainer: {
+    maxWidth: "730px",
+    margin: "0 auto",
+    padding: "20px",
+    "@media (max-width: 500px)": {
+      padding: "0px",
+      marginTop: 2,
+    },
+  },
+};

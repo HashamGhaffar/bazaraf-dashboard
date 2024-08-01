@@ -21,6 +21,7 @@ const CategoryList: React.FC = () => {
     setCategoryData,
     startLoading,
     stopLoading,
+    clearForm,
   } = useCategory();
   const initialData = editingCategory?.category;
   const [formData, setFormData] = useState({
@@ -73,51 +74,58 @@ const CategoryList: React.FC = () => {
     (state: RootState) => state.auth
   );
 
-  const handelSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
     startLoading();
+    const apiCall = async () => {
+      if (editingCategory?.categoryId) {
+        return await updateCategory(
+          accessToken,
+          restaurant.restaurantId,
+          editingCategory.categoryId,
+          {
+            name: formData.name,
+            description: formData.description,
+            imageUrl: formData.imageUrl,
+          }
+        );
+      } else {
+        return await createCategory(accessToken, restaurant.restaurantId, {
+          name: formData.name,
+          description: formData.description,
+          imageUrl: formData.imageUrl,
+        });
+      }
+    };
+
     try {
-      const apiFunction = async () => {
-        const response = await (editingCategory?.categoryId
-          ? updateCategory(
-              accessToken,
-              restaurant.restaurantId,
-              editingCategory?.categoryId || "",
-              {
-                name: formData.name,
-                description: formData.description,
-                imageUrl: formData.imageUrl,
-              }
-            )
-          : createCategory(accessToken, restaurant.restaurantId, {
-              name: formData.name,
-              description: formData.description,
-              imageUrl: formData.imageUrl,
-            }));
-        editingCategory?.categoryId
-          ? response && setCategoryData(response, "UPDATE")
-          : response && setCategoryData(response, "ADD");
-      };
-      apiFunction();
-      toast.success(
-        editingCategory?.categoryId
-          ? "Category Update Successfully"
-          : "Category Added Successfully"
-      );
-      setFormData({
-        name: "",
-        description: "",
-        imageUrl: "",
-      });
+      const response = await apiCall();
+      if (response) {
+        setCategoryData(
+          response,
+          editingCategory?.categoryId ? "UPDATE" : "ADD"
+        );
+        toast.success(
+          editingCategory?.categoryId
+            ? "Category Updated Successfully"
+            : "Category Added Successfully"
+        );
+        setFormData({
+          name: "",
+          description: "",
+          imageUrl: "",
+        });
+      }
     } catch (error) {
       toast.error("Something went wrong");
-      console.log(error, "error");
     } finally {
       stopLoading();
+      clearForm();
     }
   };
+
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -178,10 +186,10 @@ const CategoryList: React.FC = () => {
         >
           <SimpleButton
             loading={loading}
-            text="Save"
+            text={editingCategory?.categoryId ? "Update" : "Save"}
             sx={{ width: "465px", height: "50px" }}
             onClick={() => {
-              handelSubmit();
+              handleSubmit();
             }}
           />
         </Box>

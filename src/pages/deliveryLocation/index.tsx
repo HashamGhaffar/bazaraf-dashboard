@@ -203,7 +203,7 @@ function DeliveryLocation() {
             }}
           >
             <SimpleButton
-              text={deliveryLocationId ? "Update" : "Add"}
+              text={deliveryLocationId ? "Update" : "Save"}
               loading={loading}
               sx={{
                 width: "465px",

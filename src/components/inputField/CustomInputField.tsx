@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
@@ -12,6 +12,8 @@ interface InputFieldProps {
   Icon?: React.ElementType;
   showSwitch?: boolean;
   type?: string;
+  value: string;
+  disabled?: boolean;
 }
 
 const CustomInputField: React.FC<InputFieldProps> = ({
@@ -19,14 +21,15 @@ const CustomInputField: React.FC<InputFieldProps> = ({
   iconColor = "black",
   sx,
   onChange,
+  value,
   Icon,
   showSwitch = false,
   type = "default",
+  disabled = false,
 }) => {
-  const [value, setValue] = useState("");
-
+  console.log(value, "value");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    console.log(event.target.value);
     onChange(event.target.value);
   };
 
@@ -57,14 +60,24 @@ const CustomInputField: React.FC<InputFieldProps> = ({
             <Icon sx={{ color: iconColor }} />
           </IconButton>
         )}
+
         <InputBase
+          disabled={disabled}
           type={type}
           sx={{ ml: 1, flex: 1 }}
           placeholder=""
           value={value}
           onChange={handleChange}
         />
-        {showSwitch && <Switch />}
+        {showSwitch && (
+          <Switch
+            checked={value === "AVAILABLE"}
+            value={false}
+            onChange={(e) => {
+              onChange(e.target.checked);
+            }}
+          />
+        )}
       </Paper>
     </Box>
   );

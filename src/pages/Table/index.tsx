@@ -164,7 +164,7 @@ function Table() {
             }}
           >
             <SimpleButton
-              text={editingTable?.tableId ? "Update Table" : "Create Table"}
+              text={editingTable?.tableId ? "Update" : "Save"}
               sx={{
                 width: "465px",
                 height: "50px",

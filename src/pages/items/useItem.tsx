@@ -55,14 +55,17 @@ const useItem = () => {
   ) => {
     switch (action) {
       case "ADD":
-        setData((prevData) => [...prevData, item]);
+        fetchData();
+        // setData((prevData) => [...prevData, item]);
         break;
       case "UPDATE":
-        setData((prevData) =>
-          prevData.map((dataItem) =>
-            dataItem.itemId === item.itemId ? item : dataItem
-          )
-        );
+        fetchData();
+
+        // setData((prevData) =>
+        //   prevData.map((dataItem) =>
+        //     dataItem.itemId === item.itemId ? item : dataItem
+        //   )
+        // );
         break;
       case "DELETE":
         setData((prevData) =>

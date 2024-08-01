@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,25 +7,46 @@ import {
   useTheme,
 } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import InputField from "../../components/inputField";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+import InputField from "../../components/inputField";
 import DescriptionField from "../../components/descripationField";
 import SimpleButton from "../../components/simpleButton";
 import ListComponent from "../../components/ItemLists";
 import CustomInputField from "../../components/inputField/CustomInputField";
+import DropdownComponent from "../../components/dropDown";
 import useItem from "./useItem";
 import useCategory from "../categoryList/useCategory";
-import DropdownComponent from "../../components/dropDown";
 import useModifierList from "../modifierList/useModifierList";
 import { createItem, updateItem } from "../../api/itemApi";
-import { useSelector } from "react-redux";
 import { RootState } from "../../type";
-import { toast } from "react-toastify";
+
+interface FormData {
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  modifiersId: string[];
+  itemStatus: string;
+}
+
+interface Errors {
+  name: string;
+  description: string;
+  price: string;
+  imageUrl: string;
+  categoryId: string;
+  modifiersId: string;
+}
 
 const Items: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const {
     data,
     loading,
@@ -40,15 +61,24 @@ const Items: React.FC = () => {
   const { data: modifierList } = useModifierList();
   const { data: categoryList } = useCategory();
   const initialData = editingItem?.item;
-
-  const [formData, setFormData] = React.useState({
+  const ids = initialData?.modifierList?.map((item) => item.modifierListId);
+  const [formData, setFormData] = useState<FormData>({
     name: initialData?.name || "",
     description: initialData?.description || "",
     price: initialData?.price || 0,
     imageUrl: initialData?.imageUrl || "",
     categoryId: initialData?.categoryId || "",
-    modifiersId: initialData?.modifiersId || [],
-    itemStatus: initialData?.itemStatus || "Available",
+    modifiersId: ids || [],
+    itemStatus: initialData?.itemStatus || "",
+  });
+
+  const [errors, setErrors] = useState<Errors>({
+    name: "",
+    description: "",
+    price: "",
+    imageUrl: "",
+    categoryId: "",
+    modifiersId: "",
   });
 
   useEffect(() => {
@@ -58,8 +88,8 @@ const Items: React.FC = () => {
       price: initialData?.price || 0,
       imageUrl: initialData?.imageUrl || "",
       categoryId: initialData?.categoryId || "",
-      modifiersId: initialData?.modifiersId || [],
-      itemStatus: initialData?.itemStatus || "Available",
+      modifiersId: ids || [],
+      itemStatus: initialData?.itemStatus || "AVAILABLE",
     });
   }, [initialData]);
 
@@ -70,8 +100,54 @@ const Items: React.FC = () => {
     (state: RootState) => state.auth
   );
 
+  const validateForm = (): boolean => {
+    const { name, description, price, categoryId, modifiersId } = formData;
+    let isValid = true;
+    const errorsCopy: Errors = { ...errors };
+
+    if (!name) {
+      isValid = false;
+      errorsCopy.name = "Name is required";
+    } else {
+      errorsCopy.name = "";
+    }
+
+    if (!description) {
+      isValid = false;
+      errorsCopy.description = "Description is required";
+    } else {
+      errorsCopy.description = "";
+    }
+
+    if (!price) {
+      isValid = false;
+      errorsCopy.price = "Price is required";
+    } else {
+      errorsCopy.price = "";
+    }
+
+    if (!categoryId) {
+      isValid = false;
+      errorsCopy.categoryId = "Category is required";
+    } else {
+      errorsCopy.categoryId = "";
+    }
+
+    if (modifiersId.length === 0) {
+      isValid = false;
+      errorsCopy.modifiersId = "Modifiers are required";
+    } else {
+      errorsCopy.modifiersId = "";
+    }
+
+    setErrors(errorsCopy);
+    return isValid;
+  };
+
   const handelSubmit = async () => {
-    if (!formData.name || !formData.description || !formData.price) {
+    const res = validateForm();
+    if (!res) {
+      toast.error("Please fill all the required fields");
       return;
     }
     startLoading();
@@ -94,7 +170,7 @@ const Items: React.FC = () => {
           imageUrl: "",
           categoryId: "",
           modifiersId: [],
-          itemStatus: "",
+          itemStatus: "AVAILABLE",
         });
         clearForm();
         toast.success(
@@ -175,15 +251,15 @@ const Items: React.FC = () => {
               value={categoryName?.name || ""}
               onChange={(e) => {
                 const name = e.target.value;
-                const modifier = categoryList.find(
-                  (modifier) => modifier.name === name
+                const category = categoryList.find(
+                  (category) => category.name === name
                 );
                 setFormData({
                   ...formData,
-                  categoryId: modifier?.categoryId || "",
+                  categoryId: category?.categoryId || "",
                 });
               }}
-              data={categoryList.map((modifier) => modifier.name)}
+              data={categoryList.map((category) => category.name)}
             />
 
             <DropdownComponent
@@ -194,16 +270,54 @@ const Items: React.FC = () => {
                 const modifier = modifierList.find(
                   (modifier) => modifier.name === name
                 );
-                setFormData({
-                  ...formData,
-                  modifiersId: [
-                    ...formData?.modifiersId,
-                    modifier.modifierListId,
-                  ],
-                });
+
+                if (modifier) {
+                  setFormData({
+                    ...formData,
+                    modifiersId: [
+                      ...(formData && formData.modifiersId
+                        ? formData.modifiersId
+                        : []),
+                      modifier.modifierListId,
+                    ],
+                  });
+                }
               }}
               data={modifierList.map((modifier) => modifier.name)}
             />
+            <Box gap={1}>
+              {formData.modifiersId.map((modifierId) => {
+                const modifierItem = modifierList.find(
+                  (mod) => mod.modifierListId === modifierId
+                );
+
+                if (!modifierItem) return null;
+
+                return (
+                  <Box
+                    sx={{
+                      px: 3,
+                      py: 1,
+                      m: 1,
+                      borderRadius: "10px",
+                      backgroundColor: "#D9D9D9",
+                      display: "inline-block",
+                    }}
+                    key={modifierItem.modifierListId}
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        modifiersId: formData.modifiersId.filter(
+                          (id) => id !== modifierItem.modifierListId
+                        ),
+                      });
+                    }}
+                  >
+                    <Typography fontSize={14}>{modifierItem.name}</Typography>
+                  </Box>
+                );
+              })}
+            </Box>
           </Box>
           <Box
             sx={{
@@ -217,20 +331,25 @@ const Items: React.FC = () => {
             <CustomInputField
               label="Price"
               Icon={PaymentsIcon}
+              value={formData.price.toString()}
               type="number"
-              onChange={(e) => {
-                setFormData({ ...formData, price: Number(e.target.value) });
+              onChange={(value: string) => {
+                return setFormData({
+                  ...formData,
+                  price: Number(value),
+                });
               }}
             />
             <CustomInputField
               label="Available"
               showSwitch={true}
               Icon={EventAvailableIcon}
-              onChange={(e) => {
-                const value = e.target.value;
+              value={formData.itemStatus}
+              onChange={(value) => {
+                console.log("value==============", value);
                 setFormData({
                   ...formData,
-                  itemStatus: value ? "Available" : "Out of stock",
+                  itemStatus: value ? "AVAILABLE" : `OUT_OF_STOCK`,
                 });
               }}
             />
@@ -246,11 +365,9 @@ const Items: React.FC = () => {
         >
           <SimpleButton
             loading={loading}
-            text={editingItem?.itemId ? "Update" : "Create"}
+            text={editingItem?.itemId ? "Update" : "Save"}
             sx={{ width: "465px", height: "50px" }}
-            onClick={() => {
-              handelSubmit();
-            }}
+            onClick={handelSubmit}
           />
         </Box>
       </Box>

@@ -12,7 +12,7 @@ import ImageUpload from "../../../components/ImageUpload";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import useThemeApi from "../useTheme";
-import { createTheme, updateTheme } from "../../../api/ThemeApi";
+import { createTheme, updateTheme, photoUpload } from "../../../api/ThemeApi";
 import { RootState } from "../../../type";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +35,6 @@ function ThemeComponent() {
   } = useThemeApi();
   const initialData = editingTheme?.theme;
   const themeId = editingTheme?.themeId;
-
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
     primaryColor: initialData?.primaryColor || "",
@@ -148,6 +147,21 @@ function ThemeComponent() {
       editingTheme ? "Theme Updated Successfully" : "Theme Added Successfully"
     );
   };
+  const handleImageChange = (url: string) => {
+    setFormData({ ...formData, primaryLogo: url });
+  };
+
+  const handleFileChanges = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const res = await photoUpload(file, accessToken);
+        setFormData({ ...formData, backgroundImageUrl: res.imageUrl });
+      } catch (error) {
+        console.error("Error request:", error);
+      }
+    }
+  };
 
   return (
     <>
@@ -233,17 +247,28 @@ function ThemeComponent() {
             >
               <CustomInputField
                 Icon={ColorLensIcon}
+                value={formData.backgroundColor}
                 label="Background Color"
                 onChange={(e) => {
                   setFormData({ ...formData, backgroundColor: e });
                 }}
               />
-              <CustomInputField
-                Icon={ImageIcon}
-                label="Background Image"
-                onChange={(e) => {
-                  setFormData({ ...formData, backgroundImageUrl: e });
-                }}
+              <div
+                onClick={() => document.getElementById("fileInputss").click()}
+              >
+                <CustomInputField
+                  disabled={true}
+                  Icon={ImageIcon}
+                  value={formData.backgroundImageUrl}
+                  label="Background Image"
+                  onChange={() => {}}
+                />
+              </div>
+              <input
+                id="fileInputss"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleFileChanges}
               />
             </Box>
             <Box
@@ -292,7 +317,10 @@ function ThemeComponent() {
               <Typography variant="h6" fontSize={"16px"}>
                 Select Logo
               </Typography>
-              <ImageUpload />
+              <ImageUpload
+                url={formData.primaryLogo}
+                onChange={handleImageChange}
+              />
             </Box>
           </Box>
           <Box
@@ -305,7 +333,7 @@ function ThemeComponent() {
           >
             <SimpleButton
               loading={loading}
-              text={editingTheme ? "Update" : "Add"}
+              text={editingTheme ? "Update" : "Save"}
               sx={{
                 width: "465px",
                 height: "50px",

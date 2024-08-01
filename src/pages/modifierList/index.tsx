@@ -53,6 +53,17 @@ const ModifierList: React.FC = () => {
     modifiers: initialData?.modifiers || [],
   });
 
+  const [errors, setErrors] = React.useState<{
+    [key: string]: string;
+  }>({
+    name: "",
+    description: "",
+    imageUrl: "",
+    minQuantity: "",
+    maxQuantity: "",
+    modifiers: "",
+  });
+
   const { restaurant, accessToken } = useSelector(
     (state: RootState) => state.auth
   );
@@ -73,46 +84,92 @@ const ModifierList: React.FC = () => {
     }
   }, [initialData]);
 
-  const handelSubmit = async () => {
-    try {
-      startLoading();
-      const response = editingModifierList?.modifierListId
-        ? await updateModifierList(
-            accessToken,
-            restaurant.restaurantId,
-            editingModifierList?.modifierListId,
-            formData
-          )
-        : await createModifierList(
-            accessToken,
-            restaurant.restaurantId,
-            formData
-          );
+  const validateForm = () => {
+    const { name, description, modifiers, minQuantity, maxQuantity } = formData;
+    let isValid = true;
+    const errorsCopy = { ...errors };
+    const validationRules = [
+      { field: name, errorKey: "nameError", errorMessage: "Name is required" },
+      {
+        field: description,
+        errorKey: "descriptionError",
+        errorMessage: "Description is required",
+      },
+      {
+        field: minQuantity,
+        errorKey: "minQuantityError",
+        errorMessage: "Min Quantity is required",
+      },
+      {
+        field: maxQuantity,
+        errorKey: "maxQuantityError",
+        errorMessage: "Max Quantity is required",
+      },
+      {
+        field: modifiers.length,
+        errorKey: "modifiersError",
+        errorMessage: "Modifiers are required",
+      },
+    ];
 
-      if (response) {
-        setModifierListData(response, "ADD");
-        clearForm();
-        setFormData({
-          name: "",
-          description: "",
-          imageUrl: "",
-          isRequired: false,
-          minQuantity: 0,
-          maxQuantity: 0,
-          modifiers: [],
-        });
-
-        toast.success(
-          editingModifierList?.modifierListId
-            ? "Modifier List Updated Successfully"
-            : "Modifier List Created Successfully"
-        );
+    validationRules.forEach(({ field, errorKey, errorMessage }) => {
+      if (!field) {
+        errorsCopy[errorKey] = errorMessage;
+        isValid = false;
+      } else {
+        errorsCopy[errorKey] = "";
       }
-    } catch (e) {
-      console.log("An error occurred while creating the modifier list", e);
-      toast.error("Something went wrong");
-    } finally {
-      stopLoading();
+    });
+
+    setErrors(errorsCopy);
+    return isValid;
+  };
+
+  const handelSubmit = async () => {
+    const res = validateForm();
+    if (!res) {
+      toast.error("Please fill all the required fields");
+    } else {
+      try {
+        startLoading();
+        const response = editingModifierList?.modifierListId
+          ? await updateModifierList(
+              accessToken,
+              restaurant.restaurantId,
+              editingModifierList?.modifierListId,
+              formData
+            )
+          : await createModifierList(
+              accessToken,
+              restaurant.restaurantId,
+              formData
+            );
+
+        if (response) {
+          setModifierListData(response, "ADD");
+          clearForm();
+          setFormData({
+            name: "",
+            description: "",
+            imageUrl: "",
+            isRequired: false,
+            minQuantity: 0,
+            maxQuantity: 0,
+            modifiers: [],
+          });
+
+          toast.success(
+            editingModifierList?.modifierListId
+              ? "Modifier List Updated Successfully"
+              : "Modifier List Created Successfully"
+          );
+        }
+      } catch (e) {
+        console.log("An error occurred while creating the modifier list", e);
+        toast.error("Something went wrong");
+      } finally {
+        stopLoading();
+      }
     }
   };
 

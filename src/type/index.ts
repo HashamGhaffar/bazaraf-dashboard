@@ -272,6 +272,7 @@ export interface Errors {
 }
 
 export interface ItemFormData {
+  modifierListId: any;
   name: string;
   description: string;
   price: number;

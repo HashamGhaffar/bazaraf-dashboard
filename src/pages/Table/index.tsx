@@ -132,18 +132,9 @@ function Table() {
                 });
               }}
             />
-            <InputField
-              Icon={AddLocationIcon}
-              label="Location"
-              onChange={() => {}}
-            />
-            <InputField
-              label="Features"
-              Icon={FeaturedPlayListIcon}
-              onChange={() => {}}
-            />
+
             <CustomCheckbox
-              label="isRequired"
+              label="isReserved"
               onChange={(e) => {
                 setFormData({ ...formData, isReserved: e.target.checked });
               }}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -23,6 +23,7 @@ import useCategory from "../categoryList/useCategory";
 import useModifierList from "../modifierList/useModifierList";
 import { createItem, updateItem } from "../../api/itemApi";
 import { RootState } from "../../type";
+import { photoUpload } from "../../api/photoApi";
 
 interface FormData {
   name: string;
@@ -133,13 +134,6 @@ const Items: React.FC = () => {
       errorsCopy.categoryId = "";
     }
 
-    if (modifiersId.length === 0) {
-      isValid = false;
-      errorsCopy.modifiersId = "Modifiers are required";
-    } else {
-      errorsCopy.modifiersId = "";
-    }
-
     setErrors(errorsCopy);
     return isValid;
   };
@@ -184,7 +178,19 @@ const Items: React.FC = () => {
       stopLoading();
     }
   };
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
+  };
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -205,11 +211,21 @@ const Items: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
-            alt="Item"
-            src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import InputField from "../../components/inputField";
@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../type";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import { photoUpload } from "../../api/ThemeApi";
 
 const Modifiers: React.FC = () => {
   const {
@@ -26,13 +27,14 @@ const Modifiers: React.FC = () => {
   } = useModifier();
   const initialData = editingModifier?.modifier;
   const modifierId = editingModifier?.modifierId;
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   console.log("initialData", initialData);
 
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
     description: initialData?.description || "",
     priceChange: initialData?.priceChange ?? 0,
+    imageUrl: initialData?.imageUrl || "",
   });
   console.log("formData.priceChange", formData.priceChange);
 
@@ -41,6 +43,7 @@ const Modifiers: React.FC = () => {
       name: initialData?.name || "",
       description: initialData?.description || "",
       priceChange: initialData?.priceChange ?? 0,
+      imageUrl: initialData?.imageUrl || "",
     });
   }, [initialData]);
 
@@ -80,12 +83,14 @@ const Modifiers: React.FC = () => {
             name: formData.name,
             description: formData.description,
             priceChange: formData.priceChange as number,
+            imageUrl: formData.imageUrl,
           }
         )
       : await createModifier(accessToken, restaurant?.restaurantId, {
           name: formData.name,
           description: formData.description,
           priceChange: formData.priceChange as number,
+          imageUrl: formData.imageUrl,
         });
     if (response) {
       setModifierData(response, modifierId ? "UPDATE" : "ADD");
@@ -99,9 +104,22 @@ const Modifiers: React.FC = () => {
       name: "",
       description: "",
       priceChange: "",
+      imageUrl: "",
     });
     stopLoading();
     clearForm();
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
   };
 
   return (
@@ -124,11 +142,26 @@ const Modifiers: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
+          {/* <Avatar
             alt="Modifiers"
             src="path-to-your-image-scan.jpg"
             sx={{ width: 100, height: 100 }}
-          />
+          /> */}
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}

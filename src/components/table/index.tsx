@@ -99,7 +99,7 @@ const TableComponent: React.FC<ListComponentProps> = ({
                     : row.deliveryFee}
                 </TableCell>
                 <TableCell>{row.storeNextBy}</TableCell>
-                <TableCell>
+                <TableCell style={{ display: "flex", flexDirection: "row" }}>
                   <IconButton
                     onClick={() =>
                       editHandel(

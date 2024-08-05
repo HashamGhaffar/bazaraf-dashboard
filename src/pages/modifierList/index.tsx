@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -22,6 +22,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../type";
 import { toast } from "react-toastify";
+import { photoUpload } from "../../api/photoApi";
 
 const ModifierList: React.FC = () => {
   const theme = useTheme();
@@ -172,16 +173,38 @@ const ModifierList: React.FC = () => {
       }
     }
   };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
+  };
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   return (
     <Box sx={styles.container}>
       <Box sx={styles.box}>
         <Box sx={styles.avatarContainer}>
-          <Avatar
-            alt="Modifier-list"
-            src="path-to-your-image-scan.jpg"
-            sx={styles.avatar}
-          />
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography sx={styles.title}>Modifier List</Typography>
         </Box>
         <Box sx={{ mt: 2 }}>

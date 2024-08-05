@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import GridViewIcon from "@mui/icons-material/GridView";
 import InputField from "../../components/inputField";
@@ -7,6 +7,7 @@ import SimpleButton from "../../components/simpleButton";
 import ListComponent from "../../components/ItemLists";
 import useCategory from "./useCategory";
 import { createCategory, updateCategory } from "../../api/CategoryApi";
+import { photoUpload } from "../../api/photoApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../type";
 import { toast } from "react-toastify";
@@ -29,7 +30,7 @@ const CategoryList: React.FC = () => {
     description: initialData?.description || "",
     imageUrl: initialData?.imageUrl || "",
   });
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     setFormData({
       name: initialData?.name || "",
@@ -43,6 +44,18 @@ const CategoryList: React.FC = () => {
     imageUrlError: "",
   });
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     setFormData({ ...formData, [name]: e.target.value });
   };
@@ -146,11 +159,21 @@ const CategoryList: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
-            alt="Category"
-            src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { API_URL } from "../constants/config";
 import { Category, CategoryFormData } from "../type";
+import { toast } from "react-toastify";
 
 const handleError = (error: AxiosError): void => {
   if (error.response) {
@@ -56,8 +57,12 @@ export const categoriesDeleteCategory = async (
     if (response.status === 204) {
       return response.status;
     }
-  } catch (error) {
-    handleError(error as AxiosError);
+  } catch (error: any) {
+    if (error?.response?.data) {
+      toast.error(error?.response?.data);
+    }
+
+    handleError(error);
   }
 };
 

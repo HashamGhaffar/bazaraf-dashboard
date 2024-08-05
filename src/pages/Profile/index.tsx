@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../type";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { photoUpload } from "../../api/ThemeApi";
 const Profile: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -68,6 +69,7 @@ const Profile: React.FC = () => {
   const { restaurant, accessToken, user } = useSelector(
     (state: RootState) => state.auth
   );
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const fetchResturnat = async () => {
     const response = await getRestaurant(
       accessToken,
@@ -105,6 +107,14 @@ const Profile: React.FC = () => {
     fetchResturnat();
   }, []);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, brandImageUrl: res.imageUrl });
+    }
+  };
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     if (name === "address") {
       setFormData((prevFormData) => ({
@@ -133,7 +143,9 @@ const Profile: React.FC = () => {
       }));
     }
   };
-
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   const validateForm = () => {
     let valid = true;
 
@@ -227,11 +239,21 @@ const Profile: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
-            alt="profile"
-            src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <div>
+            <Avatar
+              alt="profile"
+              src={formData.brandImageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}
@@ -248,6 +270,7 @@ const Profile: React.FC = () => {
             Icon={PersonIcon}
             onChange={(e) => handleChange(e, "name")}
             value={formData.name}
+            disabled={restaurantData ? true : false}
           />
           <InputField
             label="Slogan"

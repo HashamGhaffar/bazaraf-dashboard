@@ -284,7 +284,7 @@ const ModifierList: React.FC = () => {
               }}
               data={data.map((modifier) => modifier.name)}
             />
-            <Box gap={1}>
+            <Box sx={styles.tagsContainer}>
               {formData.modifiers.map((modifier) => (
                 <Box
                   sx={styles.tag}
@@ -298,7 +298,9 @@ const ModifierList: React.FC = () => {
                     });
                   }}
                 >
-                  <Typography fontSize={14}>{modifier.name}</Typography>
+                  <Typography fontSize={14} sx={{ textWrap: "nowrap" }}>
+                    {modifier.name}
+                  </Typography>
                 </Box>
               ))}
             </Box>
@@ -338,6 +340,7 @@ const styles = {
     borderRadius: "10px",
     backgroundColor: "#D9D9D9",
     display: "inline-block",
+    cursor: "pointer",
   },
   box: {
     maxWidth: "690px",
@@ -413,5 +416,22 @@ const styles = {
       padding: "0px",
       marginTop: 2,
     },
+  },
+  tagsContainer: {
+    overflowX: "auto",
+    display: "flex",
+    gap: 1,
+    "&::-webkit-scrollbar": {
+      height: 8,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "#888",
+      borderRadius: 4,
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "#555",
+    },
+    scrollbarWidth: "thin",
+    scrollbarColor: "#888 #f1f1f1",
   },
 };

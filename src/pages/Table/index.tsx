@@ -133,6 +133,18 @@ function Table() {
               }}
             />
 
+            <InputField
+              Icon={DriveFileRenameOutlineIcon}
+              label="Location"
+              value={""}
+              onChange={() => {}}
+            />
+            <InputField
+              Icon={DriveFileRenameOutlineIcon}
+              label="Features"
+              value={""}
+              onChange={() => {}}
+            />
             <CustomCheckbox
               label="isReserved"
               onChange={(e) => {

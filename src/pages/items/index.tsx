@@ -278,61 +278,65 @@ const Items: React.FC = () => {
               data={categoryList.map((category) => category.name)}
             />
 
-            <DropdownComponent
-              title="Select Modifier"
-              value={""}
-              onChange={(e) => {
-                const name = e.target.value;
-                const modifier = modifierList.find(
-                  (modifier) => modifier.name === name
-                );
+            <Box sx={styles.dropdownWrapper(isMobile)}>
+              <DropdownComponent
+                title="Select Modifier"
+                value={""}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const modifier = modifierList.find(
+                    (modifier) => modifier.name === name
+                  );
 
-                if (modifier) {
-                  setFormData({
-                    ...formData,
-                    modifiersId: [
-                      ...(formData && formData.modifiersId
-                        ? formData.modifiersId
-                        : []),
-                      modifier.modifierListId,
-                    ],
-                  });
-                }
-              }}
-              data={modifierList.map((modifier) => modifier.name)}
-            />
-            <Box gap={1}>
-              {formData.modifiersId.map((modifierId) => {
-                const modifierItem = modifierList.find(
-                  (mod) => mod.modifierListId === modifierId
-                );
+                  if (modifier) {
+                    setFormData({
+                      ...formData,
+                      modifiersId: [
+                        ...(formData && formData.modifiersId
+                          ? formData.modifiersId
+                          : []),
+                        modifier.modifierListId,
+                      ],
+                    });
+                  }
+                }}
+                data={modifierList.map((modifier) => modifier.name)}
+              />
+              <Box sx={styles.tagsContainer}>
+                {formData.modifiersId.map((modifierId) => {
+                  const modifierItem = modifierList.find(
+                    (mod) => mod.modifierListId === modifierId
+                  );
 
-                if (!modifierItem) return null;
+                  if (!modifierItem) return null;
 
-                return (
-                  <Box
-                    sx={{
-                      px: 3,
-                      py: 1,
-                      m: 1,
-                      borderRadius: "10px",
-                      backgroundColor: "#D9D9D9",
-                      display: "inline-block",
-                    }}
-                    key={modifierItem.modifierListId}
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        modifiersId: formData.modifiersId.filter(
-                          (id) => id !== modifierItem.modifierListId
-                        ),
-                      });
-                    }}
-                  >
-                    <Typography fontSize={14}>{modifierItem.name}</Typography>
-                  </Box>
-                );
-              })}
+                  return (
+                    <Box
+                      sx={{
+                        px: 3,
+                        py: 1,
+                        m: 1,
+                        borderRadius: "10px",
+                        backgroundColor: "#D9D9D9",
+                        display: "inline-block",
+                      }}
+                      key={modifierItem.modifierListId}
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          modifiersId: formData.modifiersId.filter(
+                            (id) => id !== modifierItem.modifierListId
+                          ),
+                        });
+                      }}
+                    >
+                      <Typography fontSize={14} sx={{ textWrap: "nowrap" }}>
+                        {modifierItem.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
             </Box>
           </Box>
           <Box
@@ -410,3 +414,28 @@ const Items: React.FC = () => {
 };
 
 export default Items;
+
+const styles = {
+  dropdownWrapper: (isMobile: boolean) => ({
+    width: isMobile ? "355px" : "470px",
+    margin: "0 auto",
+    marginTop: 3,
+  }),
+  tagsContainer: {
+    overflowX: "auto",
+    display: "flex",
+    gap: 1,
+    "&::-webkit-scrollbar": {
+      height: 8,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "#888",
+      borderRadius: 4,
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "#555",
+    },
+    scrollbarWidth: "thin",
+    scrollbarColor: "#888 #f1f1f1",
+  },
+};

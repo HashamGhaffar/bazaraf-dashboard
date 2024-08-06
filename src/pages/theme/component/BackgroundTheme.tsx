@@ -273,54 +273,64 @@ function ThemeComponent() {
             </Box>
             <Box
               sx={{
-                mt: 2,
-                ml: isMobile ? 0 : 10,
-                width: isMobile ? "355px" : "470px",
-                border: "1px solid gray",
-                borderRadius: "10px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Grid
-                container
-                style={{
-                  display: "flex",
+              <Box
+                sx={{
+                  mt: 2,
+
+                  width: isMobile ? "355px" : "470px",
+                  border: "1px solid gray",
+                  borderRadius: "10px",
                   justifyContent: "center",
-                  alignItems: "center",
-                  marginLeft: "17px",
                 }}
               >
-                <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox
-                    label={"isActive"}
-                    required={true}
-                    onChange={handleCheckboxChange("isActive")}
-                    value={formData.isActive}
-                  />
+                <Grid
+                  container
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginLeft: "17px",
+                  }}
+                >
+                  <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
+                    <CustomCheckbox
+                      label={"isActive"}
+                      required={true}
+                      onChange={handleCheckboxChange("isActive")}
+                      value={formData.isActive}
+                    />
+                  </Grid>
+                  <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
+                    <CustomCheckbox
+                      label={"isDefault"}
+                      required={true}
+                      onChange={handleCheckboxChange("isDefault")}
+                      value={formData.isDefault}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox
-                    label={"isDefault"}
-                    required={true}
-                    onChange={handleCheckboxChange("isDefault")}
-                    value={formData.isDefault}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-            <Box
-              sx={{
-                mt: 2,
-                ml: isMobile ? 0 : 11,
-                width: isMobile ? "300px" : "470px",
-              }}
-            >
-              <Typography variant="h6" fontSize={"16px"}>
-                Select Logo
-              </Typography>
-              <ImageUpload
-                url={formData.primaryLogo}
-                onChange={handleImageChange}
-              />
+              </Box>
+
+              <Box
+                sx={{
+                  mt: 2,
+                  width: isMobile ? "300px" : "470px",
+                }}
+              >
+                <Typography variant="h6" fontSize={"16px"}>
+                  Select Logo
+                </Typography>
+                <ImageUpload
+                  url={formData.primaryLogo}
+                  onChange={handleImageChange}
+                />
+              </Box>
             </Box>
           </Box>
           <Box

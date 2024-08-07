@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Typography,
   Modal,
@@ -6,6 +6,10 @@ import {
   Box,
   useMediaQuery,
   useTheme,
+  FormControl,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import OrderTable from "./component/orderTable";
 import { modifier } from "../../utils";
@@ -46,6 +50,13 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [selectedValue, setSelectedValue] = useState<string>('');
+
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setSelectedValue(event.target.value as string);
+  };
+
 
   return (
     <Modal
@@ -115,9 +126,36 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <Typography variant="body2" sx={{ fontSize: "18px" }}>
               Payment Method: {orderDetails.paymentMethod}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Status: {orderDetails.status}
-            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+              <Typography variant="body2" sx={{ fontSize: '18px' }}>Status:</Typography>
+              <FormControl sx={{ marginLeft: '5px' }}>
+                <Select
+                  value={selectedValue}
+                  label="Select Option"
+                  onChange={handleChange}
+                  sx={{
+                    height: '30px',
+                    width: '150px',
+                    '.MuiSelect-select': {
+                      paddingTop: '8px',
+                      paddingBottom: '8px',
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: {
+                        maxHeight: '200px',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="option1">Pending</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             {orderDetails.instructions && (
               <Typography variant="body2" sx={{ fontSize: "18px" }}>
                 Instructions: {orderDetails.instructions}

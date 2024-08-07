@@ -31,6 +31,8 @@ import Theme from "./pages/theme";
 import { useSelector } from "react-redux";
 import { RootState } from "./type/index";
 import { ToastContainer } from "react-toastify";
+import StaffMember from "./pages/staffMember";
+import Discounts from "./pages/discount";
 
 const persistor = persistStore(store);
 
@@ -113,6 +115,16 @@ function App() {
                   <Route
                     path="/theme"
                     element={<PrivateRoute element={<Theme />} />}
+                  />
+
+                  <Route
+                    path="/discount"
+                    element={<PrivateRoute element={<Discounts />} />}
+                  />
+
+                  <Route
+                    path="/staff"
+                    element={<PrivateRoute element={<StaffMember />} />}
                   />
                 </Route>
               </Routes>

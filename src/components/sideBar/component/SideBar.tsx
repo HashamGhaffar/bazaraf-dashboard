@@ -16,8 +16,10 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+//import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import DiscountIcon from '@mui/icons-material/Discount';
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ListIcon from "@mui/icons-material/List";
 import PersonIcon from "@mui/icons-material/Person";
@@ -57,14 +59,15 @@ const Sidebar: React.FC = () => {
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashBoard" },
-    { text: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
     { text: "Profile", icon: <PersonIcon />, path: "/profile" },
     { text: "Category", icon: <CategoryIcon />, path: "categoryList" },
     { text: "Modifier", icon: <SaveAsIcon />, path: "/modifiers" },
     { text: "Modifier List", icon: <ListIcon />, path: "/modifierList" },
     { text: "Item", icon: <ItemIcon />, path: "/items" },
+    { text: 'Discount', icon: <DiscountIcon />, path: '/discount'},
     { text: "Theme", icon: <ThemeIcon />, path: "/theme" },
     { text: "Table", icon: <TableIcon />, path: "/table" },
+    { text: 'Staff Member', icon: <PersonAddIcon />, path: '/staff'},
     { text: "Delivery Location", icon: <LocationOnIcon />, path: "/location" },
     { text: "Setting", icon: <SettingsIcon />, path: "/setting" },
   ];
@@ -81,7 +84,7 @@ const Sidebar: React.FC = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <List style={{ marginTop: "30%", marginLeft: "20px" }}>
+      <List style={{ marginTop: "20%", marginLeft: "20px" }}>
         {menuItems.map((item, index) => (
           <ListItem
             button

@@ -177,7 +177,7 @@ export interface MenuItem {
   imageUrl: string;
   itemId: string;
   itemStatus: string;
-  modifierList: string[]; // or more specific type if known
+  modifierList: string[];
   name: string;
   price: number;
   restaurantId: string;
@@ -325,3 +325,17 @@ export interface Theme {
   themeId: string;
   updatedAt: number;
 }
+
+export interface Discount {
+  discountId: string;
+  name: string;
+  description: string;
+  discountType: "PERCENTAGE" | "FIXED_AMOUNT"; 
+  discountValue: number;
+  minimumOrderAmount: number;
+  startDate: number;
+  endDate: number; 
+  createdAt?: number; 
+  updatedAt?: number; 
+}
+

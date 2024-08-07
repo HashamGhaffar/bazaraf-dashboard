@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import InputField from "../../components/inputField";
 import SimpleButton from "../../components/simpleButton";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
@@ -7,6 +7,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocationCity from "@mui/icons-material/LocationCity";
 import TableComponent from "../../components/table";
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import useDeliveryLocation from "./useDeliveryLocation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { RootState } from "../../type";
@@ -83,24 +84,24 @@ function DeliveryLocation() {
       startLoading();
       const response = deliveryLocationId
         ? await updateDeliveryLocation(
-            accessToken,
-            restaurant?.restaurantId,
-            deliveryLocationId,
-            {
-              areaName: formData.areaName,
-              city: formData.city,
-              minimumOrder: formData.minimumOrder as number,
-              deliveryFee: formData.deliveryFee as number,
-              storeNextBy: formData.storeNextBy,
-            }
-          )
-        : await createDeliveryLocation(accessToken, restaurant?.restaurantId, {
+          accessToken,
+          restaurant?.restaurantId,
+          deliveryLocationId,
+          {
             areaName: formData.areaName,
             city: formData.city,
             minimumOrder: formData.minimumOrder as number,
             deliveryFee: formData.deliveryFee as number,
             storeNextBy: formData.storeNextBy,
-          });
+          }
+        )
+        : await createDeliveryLocation(accessToken, restaurant?.restaurantId, {
+          areaName: formData.areaName,
+          city: formData.city,
+          minimumOrder: formData.minimumOrder as number,
+          deliveryFee: formData.deliveryFee as number,
+          storeNextBy: formData.storeNextBy,
+        });
 
       if (response) {
         toast.success(
@@ -158,6 +159,18 @@ function DeliveryLocation() {
           <Typography textAlign={"center"} fontSize={18} lineHeight={"24px"}>
             Input the information please
           </Typography>
+          <Button
+            sx={{
+              backgroundColor: '#EDEDED',
+              color: 'black',
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: 'auto',
+            }}
+          >
+            Upload File
+            <ArrowUpwardIcon sx={{ marginRight: '6px' }} />
+          </Button>
           <Box
             sx={{
               mt: 3,

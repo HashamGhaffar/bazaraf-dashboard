@@ -8,7 +8,6 @@ import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ImageIcon from "@mui/icons-material/Image";
 import CustomInputField from "../../../components/inputField/CustomInputField";
 import CustomCheckbox from "../../../components/checkbox/Checkbox";
-import ImageUpload from "../../../components/ImageUpload";
 import { ChangeEvent, useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import useThemeApi from "../useTheme";
@@ -17,6 +16,7 @@ import { RootState } from "../../../type";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import SelectImage from "../../../components/selectImage";
 
 function ThemeComponent() {
   const theme = useTheme();
@@ -114,16 +114,16 @@ function ThemeComponent() {
 
     const response = themeId
       ? await updateTheme(
-          accessToken,
-          restaurant.restaurantId,
-          themeId,
-          formData as any
-        )
+        accessToken,
+        restaurant.restaurantId,
+        themeId,
+        formData as any
+      )
       : await createTheme(
-          accessToken,
-          restaurant.restaurantId,
-          formData as any
-        );
+        accessToken,
+        restaurant.restaurantId,
+        formData as any
+      );
     setThemeData(response, editingTheme ? "UPDATE" : "ADD");
     setFormData({
       name: "",
@@ -261,7 +261,7 @@ function ThemeComponent() {
                   Icon={ImageIcon}
                   value={formData.backgroundImageUrl}
                   label="Background Image"
-                  onChange={() => {}}
+                  onChange={() => { }}
                 />
               </div>
               <input
@@ -274,7 +274,7 @@ function ThemeComponent() {
             <Box
               sx={{
                 mt: 2,
-                ml: isMobile ? 0 : 10,
+                ml: isMobile ? 0 : 9,
                 width: isMobile ? "355px" : "470px",
                 border: "1px solid gray",
                 borderRadius: "10px",
@@ -307,67 +307,91 @@ function ThemeComponent() {
                 </Grid>
               </Grid>
             </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '5px auto', width: isMobile ? '355px' : '470px', gap: 1, }}>
+              <Typography variant="h6" fontSize={"16px"} marginBottom={'0px'}>
+                Primary Logo
+                <SelectImage />
+              </Typography>
+              <Typography variant="h6" fontSize={"16px"} marginBottom={'0px'}>
+                Seconary Logo
+                <SelectImage />
+              </Typography>
+            </Box>
             <Box
               sx={{
                 mt: 2,
-                ml: isMobile ? 0 : 11,
-                width: isMobile ? "300px" : "470px",
-              }}
-            >
-              <Typography variant="h6" fontSize={"16px"}>
-                Select Logo
-              </Typography>
-              <ImageUpload
-                url={formData.primaryLogo}
-                onChange={handleImageChange}
-              />
+                ml: isMobile ? 0 : 9,
+                width: isMobile ? '355px' : '470px',
+                border: '1px solid gray',
+                borderRadius: '10px',
+              }}>
+              <Grid container
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: '20px'
+                }}>
+                <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
+                  <CustomCheckbox label={'Grid View'} required={true} />
+                </Grid>
+                <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
+                  <CustomCheckbox label={'Text View'} required={true} />
+                </Grid>
+                <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
+                  <CustomCheckbox label={'Category View'} required={true} />
+                </Grid>
+                <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
+                  <CustomCheckbox label={'List View'} required={true} />
+                </Grid>
+              </Grid>
             </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "20px",
-            }}
-          >
-            <SimpleButton
-              loading={loading}
-              text={editingTheme ? "Update" : "Save"}
-              sx={{
-                width: "465px",
-                height: "50px",
-              }}
-              onClick={() => {
-                handleSubmit();
-              }}
-            />
-          </Box>
         </Box>
         <Box
           sx={{
-            maxWidth: "750px",
-            margin: "0 auto",
-            mt: 3,
-            "@media (max-width: 500px)": {
-              padding: "0px",
-              mt: 2,
-            },
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
           }}
         >
-          <TableComponent
-            deleteHandel={deleteTheme}
-            editHandel={editTheme}
-            rows={data}
-            h1="Theme No."
-            h2="Theme Name"
-            h3="is Active"
-            h4="is Default"
-            h5={""}
-            h6={""}
+          <SimpleButton
+            loading={loading}
+            text={editingTheme ? "Update" : "Save"}
+            sx={{
+              width: "465px",
+              height: "50px",
+            }}
+            onClick={() => {
+              handleSubmit();
+            }}
           />
         </Box>
       </Box>
+      <Box
+        sx={{
+          maxWidth: "750px",
+          margin: "0 auto",
+          mt: 3,
+          "@media (max-width: 500px)": {
+            padding: "0px",
+            mt: 2,
+          },
+        }}
+      >
+        <TableComponent
+          deleteHandel={deleteTheme}
+          editHandel={editTheme}
+          rows={data}
+          h1="Theme No."
+          h2="Theme Name"
+          h3="is Active"
+          h4="is Default"
+          h5={""}
+          h6={""}
+        />
+      </Box>
+    </Box >
     </>
   );
 }

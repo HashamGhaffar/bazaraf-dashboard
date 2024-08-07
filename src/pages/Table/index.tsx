@@ -1,10 +1,6 @@
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import InputField from "../../components/inputField";
 import SimpleButton from "../../components/simpleButton";
-import AddLocationIcon from "@mui/icons-material/AddLocation";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
-import CreateIcon from "@mui/icons-material/Create";
 import TableComponent from "../../components/table";
 import CustomCheckbox from "../../components/checkbox/Checkbox";
 import { useEffect, useState } from "react";
@@ -113,7 +109,6 @@ function Table() {
             }}
           >
             <InputField
-              Icon={DriveFileRenameOutlineIcon}
               label="Table Number"
               value={formData.tableNumber}
               onChange={(e) => {
@@ -121,7 +116,6 @@ function Table() {
               }}
             />
             <InputField
-              Icon={CreateIcon}
               type="number"
               value={formData.seatCapacity}
               label="Seating Capacity"
@@ -133,18 +127,8 @@ function Table() {
               }}
             />
 
-            <InputField
-              Icon={DriveFileRenameOutlineIcon}
-              label="Location"
-              value={""}
-              onChange={() => {}}
-            />
-            <InputField
-              Icon={DriveFileRenameOutlineIcon}
-              label="Features"
-              value={""}
-              onChange={() => {}}
-            />
+            <InputField label="Location" value={""} onChange={() => {}} />
+            <InputField label="Features" value={""} onChange={() => {}} />
             <CustomCheckbox
               label="isReserved"
               onChange={(e) => {

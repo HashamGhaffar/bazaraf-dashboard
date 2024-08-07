@@ -300,16 +300,14 @@ function ThemeComponent() {
                 >
                   <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
                     <CustomCheckbox
-                      label={"isActive"}
-                      required={true}
+                      label={"Active"}
                       onChange={handleCheckboxChange("isActive")}
                       value={formData.isActive}
                     />
                   </Grid>
                   <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
                     <CustomCheckbox
-                      label={"isDefault"}
-                      required={true}
+                      label={"Default"}
                       onChange={handleCheckboxChange("isDefault")}
                       value={formData.isDefault}
                     />
@@ -371,10 +369,10 @@ function ThemeComponent() {
             rows={data}
             h1="Theme No."
             h2="Theme Name"
-            h3="is Active"
-            h4="is Default"
-            h5={""}
-            h6={""}
+            h3="Active"
+            h4="Default"
+            h5={"Edit/Delete"}
+            // h6={""}
           />
         </Box>
       </Box>

@@ -340,7 +340,6 @@ const Profile: React.FC = () => {
               <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"DriveThru"}
-                  required={!formData.hasDriveThru}
                   value={formData.hasDriveThru}
                   onChange={() => {
                     setFormData({
@@ -353,7 +352,6 @@ const Profile: React.FC = () => {
               <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"DineIn"}
-                  required={formData.hasDineIn}
                   value={formData.hasDineIn}
                   onChange={() => {
                     setFormData({
@@ -366,7 +364,6 @@ const Profile: React.FC = () => {
               <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"PickUp"}
-                  required={formData.hasTakeAway}
                   value={formData.hasTakeAway}
                   onChange={() => {
                     setFormData({
@@ -379,7 +376,6 @@ const Profile: React.FC = () => {
               <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"Delivery"}
-                  required={formData.hasDelivery}
                   value={formData.hasDelivery}
                   onChange={() => {
                     setFormData({

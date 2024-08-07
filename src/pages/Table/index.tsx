@@ -130,7 +130,7 @@ function Table() {
             <InputField label="Location" value={""} onChange={() => {}} />
             <InputField label="Features" value={""} onChange={() => {}} />
             <CustomCheckbox
-              label="isReserved"
+              label="Reserved"
               onChange={(e) => {
                 setFormData({ ...formData, isReserved: e.target.checked });
               }}
@@ -182,7 +182,7 @@ function Table() {
             h3="Seating Capacity"
             h2=""
             h5=""
-            h4="isRequired"
+            h4="Reserved"
             h6="Edit/Delete"
             id="tableId"
           />

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import SloganIcon from "@mui/icons-material/EmojiObjects";
 import LicenseIcon from "@mui/icons-material/Assignment";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -22,8 +22,11 @@ import {
 } from "../../api/profileApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../type";
+import UpdateIcon from '@mui/icons-material/Update';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { photoUpload } from "../../api/ThemeApi";
 const Profile: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -68,6 +71,7 @@ const Profile: React.FC = () => {
   const { restaurant, accessToken, user } = useSelector(
     (state: RootState) => state.auth
   );
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const fetchResturnat = async () => {
     const response = await getRestaurant(
       accessToken,
@@ -105,6 +109,14 @@ const Profile: React.FC = () => {
     fetchResturnat();
   }, []);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, brandImageUrl: res.imageUrl });
+    }
+  };
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     if (name === "address") {
       setFormData((prevFormData) => ({
@@ -133,7 +145,9 @@ const Profile: React.FC = () => {
       }));
     }
   };
-
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   const validateForm = () => {
     let valid = true;
 
@@ -185,11 +199,11 @@ const Profile: React.FC = () => {
       console.log("payload", formData);
       const response = restaurantData
         ? await updateRestaurant(
-            accessToken,
-            user,
-            restaurant.restaurantId,
-            formData as any
-          )
+          accessToken,
+          user,
+          restaurant.restaurantId,
+          formData as any
+        )
         : createRestaurant(accessToken, user, formData);
       console.log("Response", response);
       toast.success(
@@ -227,11 +241,21 @@ const Profile: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
-            alt="profile"
-            src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <div>
+            <Avatar
+              alt="profile"
+              src={formData.brandImageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}
@@ -245,9 +269,11 @@ const Profile: React.FC = () => {
         <Box sx={{ mt: 2 }}>
           <InputField
             label="Name"
-            Icon={PersonIcon}
+            Icon={FiberManualRecordIcon}
+            iconColor="#5BB28B"
             onChange={(e) => handleChange(e, "name")}
             value={formData.name}
+            disabled={restaurantData ? true : false}
           />
           <InputField
             label="Slogan"
@@ -277,21 +303,21 @@ const Profile: React.FC = () => {
             sx={{
               display: "flex",
               flexDirection: "row",
-              ml: isMobile ? 0 : 11,
-              width: isMobile ? "355px" : "470px",
-              gap: 1,
+              ml: { sx: 0, sm: 11 },
+              width: { sx: "470px", sm: "470px" },
             }}
           >
             <InputField
               type="time"
               label="Opening Hours"
-              Icon={LocationIcon}
+              Icon={UpdateIcon}
               onChange={(e) => handleChange(e, "openingHours")}
               value={formatTime(formData.openingHours)}
+              sx={{mr: 5}}
             />
             <InputField
               label="Delivery Time"
-              Icon={LocationIcon}
+              Icon={AccessTimeIcon}
               onChange={(e) => handleChange(e, "deliveryTime")}
               value={formData.deliveryTime}
             />
@@ -299,8 +325,8 @@ const Profile: React.FC = () => {
           <Box
             sx={{
               mt: 2,
-              ml: isMobile ? 0 : 11,
-              width: isMobile ? "355px" : "470px",
+              ml: { sx: 0, sm: 11 },
+              width: { sx: "355px", sm: "470px" },
               border: "1px solid gray",
               borderRadius: "10px",
             }}
@@ -317,7 +343,6 @@ const Profile: React.FC = () => {
               <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"DriveThru"}
-                  required={!formData.hasDriveThru}
                   value={formData.hasDriveThru}
                   onChange={() => {
                     setFormData({
@@ -330,7 +355,6 @@ const Profile: React.FC = () => {
               <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"DineIn"}
-                  required={formData.hasDineIn}
                   value={formData.hasDineIn}
                   onChange={() => {
                     setFormData({
@@ -343,7 +367,6 @@ const Profile: React.FC = () => {
               <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"PickUp"}
-                  required={formData.hasTakeAway}
                   value={formData.hasTakeAway}
                   onChange={() => {
                     setFormData({
@@ -356,7 +379,6 @@ const Profile: React.FC = () => {
               <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
                 <CustomCheckbox
                   label={"Delivery"}
-                  required={formData.hasDelivery}
                   value={formData.hasDelivery}
                   onChange={() => {
                     setFormData({

@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-//import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DiscountIcon from '@mui/icons-material/Discount';
@@ -43,33 +42,31 @@ import {
 const Sidebar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery('(max-width:600px)');
 
-  const toggleDrawer =
-    (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-        event.type === "keydown" &&
-        ((event as React.KeyboardEvent).key === "Tab" ||
-          (event as React.KeyboardEvent).key === "Shift")
-      ) {
-        return;
-      }
-      setOpen(isOpen);
-    };
+  const toggleDrawer = (isOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
+      return;
+    }
+    setOpen(isOpen);
+  };
+
+  const isCreateNewStaffFeatureEnabled = import.meta.env.REACT_APP_ENABLE_STAFF_MEMBER_FEATURE === 'true';
+  const isDiscountFeatureEnabled = import.meta.env.REACT_APP_ENABLE_DISCOUNT_FEATURE === 'true';
 
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/dashBoard" },
-    { text: "Profile", icon: <PersonIcon />, path: "/profile" },
-    { text: "Category", icon: <CategoryIcon />, path: "categoryList" },
-    { text: "Modifier", icon: <SaveAsIcon />, path: "/modifiers" },
-    { text: "Modifier List", icon: <ListIcon />, path: "/modifierList" },
-    { text: "Item", icon: <ItemIcon />, path: "/items" },
-    { text: 'Discount', icon: <DiscountIcon />, path: '/discount'},
-    { text: "Theme", icon: <ThemeIcon />, path: "/theme" },
-    { text: "Table", icon: <TableIcon />, path: "/table" },
-    { text: 'Staff Member', icon: <PersonAddIcon />, path: '/staff'},
-    { text: "Delivery Location", icon: <LocationOnIcon />, path: "/location" },
-    { text: "Setting", icon: <SettingsIcon />, path: "/setting" },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashBoard' },
+    { text: 'Profile', icon: <PersonIcon />, path: '/profile' },
+    { text: 'Category', icon: <CategoryIcon />, path: '/categoryList' },
+    { text: 'Modifier', icon: <SaveAsIcon />, path: '/modifiers' },
+    { text: 'Modifier List', icon: <ListIcon />, path: '/modifierList' },
+    { text: 'Item', icon: <ItemIcon />, path: '/items' },
+    { text: 'Discount', icon: <DiscountIcon />, path: '/discount', enabled: isDiscountFeatureEnabled },
+    { text: 'Theme', icon: <ThemeIcon />, path: '/theme' },
+    { text: 'Table', icon: <TableIcon />, path: '/table' },
+    { text: 'Delivery Location', icon: <LocationOnIcon />, path: '/location' },
+    { text: 'Staff Member', icon: <PersonAddIcon />, path: '/staff', enabled: isCreateNewStaffFeatureEnabled },
+    { text: 'Setting', icon: <SettingsIcon />, path: '/setting' },
   ];
 
   const handleMenuItemClick = (path: string) => {
@@ -85,16 +82,18 @@ const Sidebar: React.FC = () => {
       onKeyDown={toggleDrawer(false)}
     >
       <List style={{ marginTop: "20%", marginLeft: "20px" }}>
-        {menuItems.map((item, index) => (
-          <ListItem
-            button
-            key={index}
-            onClick={() => handleMenuItemClick(item.path)}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
+        {menuItems
+          .filter(item => item.enabled !== false) 
+          .map((item, index) => (
+            <ListItem
+              button
+              key={index}
+              onClick={() => handleMenuItemClick(item.path)}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
       </List>
     </Box>
   );

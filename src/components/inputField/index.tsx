@@ -13,6 +13,7 @@ interface InputFieldProps {
   value?: string | number | undefined;
   errorMessage?: string;
   type?: string;
+  disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -24,6 +25,7 @@ const InputField: React.FC<InputFieldProps> = ({
   errorMessage,
   value,
   type,
+  disabled,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event);
@@ -72,6 +74,7 @@ const InputField: React.FC<InputFieldProps> = ({
             placeholder=""
             value={value}
             type={type}
+            disabled={disabled}
             onChange={handleChange}
           />
         </Paper>

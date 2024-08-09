@@ -17,7 +17,7 @@ const handleError = (error: AxiosError): void => {
 export const createDiscount = async (
     accessToken?: string | null,
     restaurantId?: string,
-    createDiscountRequest?: any
+    createDiscountRequest?: Discount 
 ): Promise<Discount | undefined> => {
     const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/discounts`;
     try {
@@ -30,13 +30,12 @@ export const createDiscount = async (
                 },
             }
         );
-
         return response.data;
     } catch (error) {
         handleError(error as AxiosError);
     }
 };
-  
+
 export const deleteDiscount = async (
     accessToken: string,
     restaurantId: string,
@@ -79,10 +78,7 @@ export const getAllDiscount = async (
     accessToken: string | null,
     restaurantId: string
 ): Promise<Discount[] | undefined> => {
-    console.log(restaurantId, "restaurantId");
     const endpointUrl = `${API_URL}/api/v1/public/restaurants/${restaurantId}/discounts`;
-    console.log(endpointUrl, "endpointUrl");
-
     try {
         const response: AxiosResponse<Discount[]> = await axios.get(endpointUrl, {
             headers: {
@@ -99,7 +95,7 @@ export const updateDiscount = async (
     accessToken: string | null,
     restaurantId: string,
     discountId: string,
-    updateDiscountRequest: Discount
+    updateDiscountRequest: Discount 
 ): Promise<Discount | undefined> => {
     const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/discounts/${discountId}`;
     try {

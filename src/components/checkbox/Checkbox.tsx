@@ -13,8 +13,8 @@ interface CustomCheckboxProps {
 const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   sx,
   label,
-  required = false,
-  defaultChecked = false,
+  required,
+  defaultChecked,
   onChange,
   value,
 }) => (

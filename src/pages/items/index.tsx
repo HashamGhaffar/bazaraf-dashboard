@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -23,6 +23,7 @@ import useCategory from "../categoryList/useCategory";
 import useModifierList from "../modifierList/useModifierList";
 import { createItem, updateItem } from "../../api/itemApi";
 import { RootState } from "../../type";
+import { photoUpload } from "../../api/photoApi";
 
 interface FormData {
   name: string;
@@ -133,13 +134,6 @@ const Items: React.FC = () => {
       errorsCopy.categoryId = "";
     }
 
-    if (modifiersId.length === 0) {
-      isValid = false;
-      errorsCopy.modifiersId = "Modifiers are required";
-    } else {
-      errorsCopy.modifiersId = "";
-    }
-
     setErrors(errorsCopy);
     return isValid;
   };
@@ -184,7 +178,19 @@ const Items: React.FC = () => {
       stopLoading();
     }
   };
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
+  };
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -205,11 +211,21 @@ const Items: React.FC = () => {
             flexDirection: "column",
           }}
         >
-          <Avatar
-            alt="Item"
-            src="path-to-your-image-scan.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography
             fontWeight={"600"}
             fontSize={"40px"}
@@ -223,7 +239,7 @@ const Items: React.FC = () => {
         <Box sx={{ mt: 2 }}>
           <InputField
             label="Name"
-            Icon={SaveAsIcon}
+            Icon={EditNoteIcon}
             value={formData.name}
             onChange={(e) => {
               setFormData({ ...formData, name: e.target.value });
@@ -262,61 +278,65 @@ const Items: React.FC = () => {
               data={categoryList.map((category) => category.name)}
             />
 
-            <DropdownComponent
-              title="Select Modifier"
-              value={""}
-              onChange={(e) => {
-                const name = e.target.value;
-                const modifier = modifierList.find(
-                  (modifier) => modifier.name === name
-                );
+            <Box sx={styles.dropdownWrapper(isMobile)}>
+              <DropdownComponent
+                title="Select Modifier"
+                value={""}
+                onChange={(e) => {
+                  const name = e.target.value;
+                  const modifier = modifierList.find(
+                    (modifier) => modifier.name === name
+                  );
 
-                if (modifier) {
-                  setFormData({
-                    ...formData,
-                    modifiersId: [
-                      ...(formData && formData.modifiersId
-                        ? formData.modifiersId
-                        : []),
-                      modifier.modifierListId,
-                    ],
-                  });
-                }
-              }}
-              data={modifierList.map((modifier) => modifier.name)}
-            />
-            <Box gap={1}>
-              {formData.modifiersId.map((modifierId) => {
-                const modifierItem = modifierList.find(
-                  (mod) => mod.modifierListId === modifierId
-                );
+                  if (modifier) {
+                    setFormData({
+                      ...formData,
+                      modifiersId: [
+                        ...(formData && formData.modifiersId
+                          ? formData.modifiersId
+                          : []),
+                        modifier.modifierListId,
+                      ],
+                    });
+                  }
+                }}
+                data={modifierList.map((modifier) => modifier.name)}
+              />
+              <Box sx={styles.tagsContainer}>
+                {formData.modifiersId.map((modifierId) => {
+                  const modifierItem = modifierList.find(
+                    (mod) => mod.modifierListId === modifierId
+                  );
 
-                if (!modifierItem) return null;
+                  if (!modifierItem) return null;
 
-                return (
-                  <Box
-                    sx={{
-                      px: 3,
-                      py: 1,
-                      m: 1,
-                      borderRadius: "10px",
-                      backgroundColor: "#D9D9D9",
-                      display: "inline-block",
-                    }}
-                    key={modifierItem.modifierListId}
-                    onClick={() => {
-                      setFormData({
-                        ...formData,
-                        modifiersId: formData.modifiersId.filter(
-                          (id) => id !== modifierItem.modifierListId
-                        ),
-                      });
-                    }}
-                  >
-                    <Typography fontSize={14}>{modifierItem.name}</Typography>
-                  </Box>
-                );
-              })}
+                  return (
+                    <Box
+                      sx={{
+                        px: 3,
+                        py: 1,
+                        m: 1,
+                        borderRadius: "10px",
+                        backgroundColor: "#D9D9D9",
+                        display: "inline-block",
+                      }}
+                      key={modifierItem.modifierListId}
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          modifiersId: formData.modifiersId.filter(
+                            (id) => id !== modifierItem.modifierListId
+                          ),
+                        });
+                      }}
+                    >
+                      <Typography fontSize={14} sx={{ textWrap: "nowrap" }}>
+                        {modifierItem.name}
+                      </Typography>
+                    </Box>
+                  );
+                })}
+              </Box>
             </Box>
           </Box>
           <Box
@@ -394,3 +414,28 @@ const Items: React.FC = () => {
 };
 
 export default Items;
+
+const styles = {
+  dropdownWrapper: (isMobile: boolean) => ({
+    width: isMobile ? "355px" : "470px",
+    margin: "0 auto",
+    marginTop: 3,
+  }),
+  tagsContainer: {
+    overflowX: "auto",
+    display: "flex",
+    gap: 1,
+    "&::-webkit-scrollbar": {
+      height: 8,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "#888",
+      borderRadius: 4,
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "#555",
+    },
+    scrollbarWidth: "thin",
+    scrollbarColor: "#888 #f1f1f1",
+  },
+};

@@ -1,8 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 import { Box, Typography, Avatar, useMediaQuery, useTheme } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import PercentIcon from "@mui/icons-material/Percent";
+import PriceChangeIcon from "@mui/icons-material/PriceChange"; 
 import InputField from "../../components/inputField";
 import DescriptionField from "../../components/descripationField";
 import SimpleButton from "../../components/simpleButton";
@@ -17,6 +18,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SelectChangeEvent } from "@mui/material/Select";
 import TableData from "./table";
+import CustomCheckbox from "../../components/checkbox/Checkbox";
 
 const Discounts: React.FC = () => {
     const {
@@ -31,22 +33,19 @@ const Discounts: React.FC = () => {
         stopLoading,
     } = useDiscount();
     const theme = useTheme();
-    const initialData = editingDiscount?.discount;
-    const discountId = editingDiscount?.discountId;
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { restaurant, accessToken } = useSelector((state: RootState) => state.auth);
     const DiscountType = ["PERCENTAGE", "FIXED_AMOUNT"];
 
-    console.log("discount table data->", data);
-
     const [formData, setFormData] = useState({
-        name: initialData?.name || "",
-        description: initialData?.description || "",
-        discountType: initialData?.discountType || "",
-        discountValue: initialData?.discountValue || "",
-        minimumOrderAmount: initialData?.minimumOrderAmount || "",
-        startDate: initialData?.startDate || null,
-        endDate: initialData?.endDate || null,
+        name: "",
+        description: "",
+        discountType: "PERCENTAGE",
+        discountValue: "",
+        minimumOrderAmount: "",
+        startDate: null,
+        endDate: null,
+        isActive: true,
     });
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string) => {
@@ -63,10 +62,16 @@ const Discounts: React.FC = () => {
     const handleDateChange = (date: Date | null, name: string) => {
         setFormData({
             ...formData,
-            [name]: date ? Math.floor(date.getTime() / 1000) : null,
+            [name]: date ? Math.floor(date.getTime() / 1000) : null
         });
     };
 
+    const handleCheckboxChange = () => {
+        setFormData(prevState => ({
+            ...prevState,
+            isActive: !prevState.isActive
+        }));
+    };
 
     const validateForm = () => {
         const { name, description, discountType, discountValue, minimumOrderAmount, startDate, endDate } = formData;
@@ -115,25 +120,27 @@ const Discounts: React.FC = () => {
                 discountType: formData.discountType as "PERCENTAGE" | "FIXED_AMOUNT",
                 discountValue: Number(formData.discountValue),
                 minimumOrderAmount: Number(formData.minimumOrderAmount),
-                startDate: formData.startDate !== null ? Math.floor(new Date(formData.startDate * 1000).getTime() / 1000) : null,
-                endDate: formData.endDate !== null ? Math.floor(new Date(formData.endDate * 1000).getTime() / 1000) : null,
+                startDate: formData.startDate ? Math.floor(new Date(formData.startDate * 1000).getTime() / 1000) : null,
+                endDate: formData.endDate ? Math.floor(new Date(formData.endDate * 1000).getTime() / 1000) : null,
+                isActive: formData.isActive
             };
 
-            const response = discountId
-                ? await updateDiscount(accessToken, restaurant.restaurantId, discountId, requestData as Discount)
+            const response = editingDiscount?.discountId
+                ? await updateDiscount(accessToken, restaurant.restaurantId, editingDiscount.discountId, requestData as Discount)
                 : await createDiscount(accessToken, restaurant.restaurantId, requestData as Discount);
 
             if (response) {
-                toast.success(discountId ? "Discount updated successfully" : "Discount created successfully");
-                setDiscountData(response, discountId ? "UPDATE" : "ADD");
+                toast.success(editingDiscount?.discountId ? "Discount updated successfully" : "Discount created successfully");
+                setDiscountData(response, editingDiscount?.discountId ? "UPDATE" : "ADD");
                 setFormData({
                     name: "",
                     description: "",
-                    discountType: "",
+                    discountType: "PERCENTAGE",
                     discountValue: "",
                     minimumOrderAmount: "",
                     startDate: null,
                     endDate: null,
+                    isActive: true
                 });
                 clearForm();
             }
@@ -144,6 +151,24 @@ const Discounts: React.FC = () => {
             stopLoading();
         }
     };
+
+    //console.log("restaurantId-> ",restaurant.restaurantId )
+    useEffect(() => {
+        if (editingDiscount) {
+            setFormData({
+                name: editingDiscount.discount?.name || "",
+                description: editingDiscount.discount?.description || "",
+                discountType: editingDiscount.discount?.discountType || "PERCENTAGE",
+                discountValue: editingDiscount.discount?.discountValue || "",
+                minimumOrderAmount: editingDiscount.discount?.minimumOrderAmount || "",
+                startDate: editingDiscount.discount?.startDate || null,
+                endDate: editingDiscount.discount?.endDate || null,
+                isActive: editingDiscount.discount?.isActive ?? true,
+            });
+        }
+    }, [editingDiscount]);
+
+    const valueIcon = formData.discountType === "PERCENTAGE" ? PercentIcon : PriceChangeIcon;
 
     return (
         <Box sx={{ marginX: "15px" }}>
@@ -183,7 +208,7 @@ const Discounts: React.FC = () => {
                 <Box sx={{ mt: 2 }}>
                     <InputField
                         label="Name"
-                        Icon={SaveAsIcon}
+                        Icon={EditNoteIcon}
                         value={formData.name}
                         onChange={(e) => handleChange(e, "name")}
                     />
@@ -210,17 +235,15 @@ const Discounts: React.FC = () => {
                     </Box>
                     <Box
                         sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            ml: isMobile ? 0 : 11,
-                            width: isMobile ? '355px' : '470px',
+                            ml: { xs: 0, sm: 15 },
+                            width: { xs: '355px', sm: "470px" },
                             gap: 1,
                         }}
                     >
                         <InputField
                             label="Value"
                             value={formData.discountValue}
-                            Icon={PercentIcon}
+                            Icon={valueIcon} 
                             onChange={(e) => handleChange(e, "discountValue")}
                         />
                         <InputField
@@ -233,52 +256,56 @@ const Discounts: React.FC = () => {
                     <Box
                         sx={{
                             mt: 1,
-                            ml: { xs: 0, sm: 11 },
-                            width: {xs: '355px', sm: "470px"}
+                            ml: { xs: 0, sm: 15 },
+                            width: { xs: '355px', sm: "470px" }
                         }}
                     >
                         <Typography gutterBottom>
                             Valid From
                         </Typography>
                         <DateTimePicker
-                            selectedDate={formData.startDate ? new Date(formData.startDate) : null}
+                            selectedDate={formData.startDate ? new Date(formData.startDate * 1000) : null} 
                             onDateChange={(date) => handleDateChange(date, "startDate")}
                         />
                     </Box>
                     <Box
                         sx={{
-                            ml: isMobile ? 0 : 11,
-                            width: isMobile ? '355px' : '470px',
+                            ml: { xs: 0, sm: 15 },
+                            width: { xs: '355px', sm: "470px" }
                         }}
                     >
                         <Typography gutterBottom>
-                            Valid To
+                            Valid Until
                         </Typography>
                         <DateTimePicker
-                            selectedDate={formData.endDate ? new Date(formData.endDate) : null}
+                            selectedDate={formData.endDate ? new Date(formData.endDate * 1000) : null} 
                             onDateChange={(date) => handleDateChange(date, "endDate")}
                         />
                     </Box>
-                </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        padding: "20px",
-                    }}
-                >
-                    <SimpleButton
-                        loading={loading}
-                        text={discountId ? "Update" : "Save"}
-                        sx={{ width: '465px', height: '50px' }}
-                        onClick={handleSubmit}
-                    />
+                    <Box sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                        <CustomCheckbox
+                            label="Active"
+                            value={formData.isActive}
+                            onChange={handleCheckboxChange}
+                            sx={{
+                                width: isMobile ? "355px" : "470px",
+                                margin: "0 auto",
+                              }}
+                        />
+                    </Box>
+                    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                        <SimpleButton
+                            loading={loading}
+                            text={editingDiscount?.discountId ? "Update" : "Save"}
+                            onClick={handleSubmit}
+                            sx={{ width: '465px', height: '50px' }}
+                        />
+                    </Box>
                 </Box>
             </Box>
             <Box
                 sx={{
-                    maxWidth: "690px",
+                    maxWidth: "750px",
                     margin: "0 auto",
                     mt: 3,
                     "@media (max-width: 500px)": {
@@ -293,11 +320,12 @@ const Discounts: React.FC = () => {
                     rows={data}
                     h1="Name"
                     h2="Description"
-                    h3="Discount Type"
+                    h3="Type"
                     h4="Value"
                     h5="Min Order"
                     h6="Date"
-                    h7="Edit/Delete"
+                    h7="Active"
+                    h8="Edit/Delete"
                 />
             </Box>
         </Box>

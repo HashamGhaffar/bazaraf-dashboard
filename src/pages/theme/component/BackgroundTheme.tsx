@@ -1,5 +1,5 @@
 import { Box, Typography, Grid, useMediaQuery, useTheme } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import InputField from "../../../components/inputField";
 import SimpleButton from "../../../components/simpleButton";
 import TableComponent from "../../../components/themeTable";
@@ -165,10 +165,10 @@ function ThemeComponent() {
 
   return (
     <>
-      <Box sx={{ marginX: "15px", backgroundColor: "white" }}>
+      <Box sx={{ marginX: "15px", backgroundColor: 'white', }}>
         <Box
           sx={{
-            maxWidth: "690px",
+            width: "700px",
             margin: "0 auto",
             borderRadius: "8px",
             boxShadow: "0px 0px 4px 0px #00000040",
@@ -189,21 +189,12 @@ function ThemeComponent() {
           </Typography>
           <Box sx={{ mt: 3 }}>
             <InputField
-              Icon={PersonIcon}
+              Icon={EditNoteIcon}
               label="Name"
               value={formData.name}
               onChange={(e) => handleChange(e, "name")}
             />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                margin: "0 auto",
-                width: isMobile ? "355px" : "470px",
-                mt: 3,
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, mt: 3, gap: 1 }}>
               <DropdownComponent
                 value={formData.primaryFont}
                 title="Primary font"
@@ -215,16 +206,7 @@ function ThemeComponent() {
                 onChange={handleDropdownChange("secondaryFont")}
               />
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                margin: "0 auto",
-                width: isMobile ? "355px" : "470px",
-                mt: 3,
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, mt: 3, gap: 1 }}>
               <DropdownComponent
                 title="Primary color"
                 onChange={handleDropdownChange("primaryColor")}
@@ -236,15 +218,7 @@ function ThemeComponent() {
                 value={formData.secondaryColor}
               />
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                margin: "0 auto",
-                width: isMobile ? "355px" : "470px",
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, gap: 1, }}>
               <CustomInputField
                 Icon={ColorLensIcon}
                 value={formData.backgroundColor}
@@ -274,12 +248,11 @@ function ThemeComponent() {
             <Box
               sx={{
                 mt: 2,
-                ml: isMobile ? 0 : 9,
-                width: isMobile ? "355px" : "470px",
-                border: "1px solid gray",
-                borderRadius: "10px",
-              }}
-            >
+                ml: {sx: 0, sm: 12},
+                width: {sx: "355px", sm: "470px"},
+                border: '1px solid gray',
+                borderRadius: '10px',
+              }}>
               <Grid
                 container
                 style={{
@@ -291,16 +264,14 @@ function ThemeComponent() {
               >
                 <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
                   <CustomCheckbox
-                    label={"isActive"}
-                    required={true}
+                    label={"Active"}
                     onChange={handleCheckboxChange("isActive")}
                     value={formData.isActive}
                   />
                 </Grid>
                 <Grid item xs={isMobile ? 6 : 12} sm={isMobile ? 2 : 6}>
                   <CustomCheckbox
-                    label={"isDefault"}
-                    required={true}
+                    label={"Default"}
                     onChange={handleCheckboxChange("isDefault")}
                     value={formData.isDefault}
                   />
@@ -320,8 +291,8 @@ function ThemeComponent() {
             <Box
               sx={{
                 mt: 2,
-                ml: isMobile ? 0 : 9,
-                width: isMobile ? '355px' : '470px',
+                ml: {sx: 0, sm: 12},
+                width: {sx: "355px", sm: "470px"},
                 border: '1px solid gray',
                 borderRadius: '10px',
               }}>
@@ -346,52 +317,51 @@ function ThemeComponent() {
                 </Grid>
               </Grid>
             </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: "20px",
+            }} >
+            <SimpleButton
+              loading={loading}
+              text={editingTheme ? "Update" : "Save"}
+              sx={{
+                width: "465px",
+                height: "50px",
+              }}
+              onClick={() => {
+                handleSubmit();
+              }}
+            />
+          </Box>
         </Box>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
+            maxWidth: "750px",
+            margin: "0 auto",
+            mt: 3,
+            "@media (max-width: 500px)": {
+              padding: "0px",
+              mt: 2
+            },
           }}
         >
-          <SimpleButton
-            loading={loading}
-            text={editingTheme ? "Update" : "Save"}
-            sx={{
-              width: "465px",
-              height: "50px",
-            }}
-            onClick={() => {
-              handleSubmit();
-            }}
+          <TableComponent
+            deleteHandel={deleteTheme}
+            editHandel={editTheme}
+            rows={data}
+            h1="Theme No."
+            h2="Theme Name"
+            h3="Active"
+            h4="Default"
+            h5={"Edit/Delete"}
+          // h6={""}
           />
         </Box>
-      </Box>
-      <Box
-        sx={{
-          maxWidth: "750px",
-          margin: "0 auto",
-          mt: 3,
-          "@media (max-width: 500px)": {
-            padding: "0px",
-            mt: 2,
-          },
-        }}
-      >
-        <TableComponent
-          deleteHandel={deleteTheme}
-          editHandel={editTheme}
-          rows={data}
-          h1="Theme No."
-          h2="Theme Name"
-          h3="is Active"
-          h4="is Default"
-          h5={""}
-          h6={""}
-        />
-      </Box>
-    </Box >
+      </Box >
     </>
   );
 }

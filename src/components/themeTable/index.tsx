@@ -22,7 +22,7 @@ interface ListComponentProps {
   h5: string;
   deleteHandel: (id: string) => void;
   editHandel: (id: string, row: any) => void;
-  h6: string;
+  h6?: string;
 }
 
 const ThemeTable: React.FC<ListComponentProps> = ({
@@ -68,11 +68,6 @@ const ThemeTable: React.FC<ListComponentProps> = ({
               >
                 {h5}
               </TableCell>
-              <TableCell
-                sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
-              >
-                {h6}
-              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -80,7 +75,7 @@ const ThemeTable: React.FC<ListComponentProps> = ({
               console.log(row);
               return (
                 <TableRow key={index} sx={{ borderBottom: "1px solid grey" }}>
-                  <TableCell>{index}</TableCell>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.isActive ? "Yes" : "No"}</TableCell>
                   <TableCell>{row.isDefault ? "Yes" : "No"}</TableCell>

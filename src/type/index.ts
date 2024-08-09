@@ -330,12 +330,13 @@ export interface Discount {
   discountId: string;
   name: string;
   description: string;
-  discountType: "PERCENTAGE" | "FIXED_AMOUNT"; 
+  discountType: "PERCENTAGE" | "FIXED_AMOUNT";
   discountValue: number;
   minimumOrderAmount: number;
   startDate: number;
-  endDate: number; 
-  createdAt?: number; 
-  updatedAt?: number; 
+  endDate: number;
+  isActive: boolean; 
+  createdAt?: number;
+  updatedAt?: number;
 }
 

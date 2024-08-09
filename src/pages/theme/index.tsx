@@ -18,7 +18,7 @@ const Theme: React.FC = () => {
                 sx={{
                     position: 'fixed',
                     top: '15%',
-                    right: '15%',
+                    right: '17%',
                     width: '200px',
                     height: '200px',
                     borderRadius: '50%',
@@ -30,7 +30,7 @@ const Theme: React.FC = () => {
                 sx={{
                     position: 'fixed',
                     bottom: '0%',
-                    left: '15%',
+                    left: '13%',
                     width: '300px',
                     height: '300px',
                     borderRadius: '50%',

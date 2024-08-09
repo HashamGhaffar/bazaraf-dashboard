@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -6,7 +6,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import SaveAsIcon from "@mui/icons-material/SaveAs";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import InputField from "../../components/inputField";
 import DescriptionField from "../../components/descripationField/index";
 import SimpleButton from "../../components/simpleButton";
@@ -22,6 +22,7 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../type";
 import { toast } from "react-toastify";
+import { photoUpload } from "../../api/photoApi";
 
 const ModifierList: React.FC = () => {
   const theme = useTheme();
@@ -172,22 +173,44 @@ const ModifierList: React.FC = () => {
       }
     }
   };
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (file) {
+      const res = await photoUpload(file, accessToken);
+      setFormData({ ...formData, imageUrl: res.imageUrl });
+    }
+  };
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
   return (
     <Box sx={styles.container}>
       <Box sx={styles.box}>
         <Box sx={styles.avatarContainer}>
-          <Avatar
-            alt="Modifier-list"
-            src="path-to-your-image-scan.jpg"
-            sx={styles.avatar}
-          />
+          <div>
+            <Avatar
+              alt="Category"
+              src={formData.imageUrl}
+              sx={{ width: 100, height: 100 }}
+              onClick={handleAvatarClick}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+          </div>
           <Typography sx={styles.title}>Modifier List</Typography>
         </Box>
         <Box sx={{ mt: 2 }}>
           <InputField
             label="Name"
-            Icon={SaveAsIcon}
+            Icon={EditNoteIcon}
             value={formData.name}
             onChange={(e) => {
               setFormData({ ...formData, name: e.target.value });
@@ -261,7 +284,7 @@ const ModifierList: React.FC = () => {
               }}
               data={data.map((modifier) => modifier.name)}
             />
-            <Box gap={1}>
+            <Box sx={styles.tagsContainer}>
               {formData.modifiers.map((modifier) => (
                 <Box
                   sx={styles.tag}
@@ -275,7 +298,9 @@ const ModifierList: React.FC = () => {
                     });
                   }}
                 >
-                  <Typography fontSize={14}>{modifier.name}</Typography>
+                  <Typography fontSize={14} sx={{ textWrap: "nowrap" }}>
+                    {modifier.name}
+                  </Typography>
                 </Box>
               ))}
             </Box>
@@ -315,6 +340,7 @@ const styles = {
     borderRadius: "10px",
     backgroundColor: "#D9D9D9",
     display: "inline-block",
+    cursor: "pointer",
   },
   box: {
     maxWidth: "690px",
@@ -390,5 +416,22 @@ const styles = {
       padding: "0px",
       marginTop: 2,
     },
+  },
+  tagsContainer: {
+    overflowX: "auto",
+    display: "flex",
+    gap: 1,
+    "&::-webkit-scrollbar": {
+      height: 8,
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "#888",
+      borderRadius: 4,
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "#555",
+    },
+    scrollbarWidth: "thin",
+    scrollbarColor: "#888 #f1f1f1",
   },
 };

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const useItem = () => {
-  const [data, setData] = useState<ItemFormData[]>([]);
+  const [data, setData] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState<{
     itemId: string;
@@ -31,7 +31,7 @@ const useItem = () => {
       console.log(restaurant, "restaurant.restaurantId");
       const response = await getAllItems(accessToken, restaurant.restaurantId);
       console.log(response, "response");
-      setData(response || []);
+      response && setData(response || []);
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
       notify("Error fetching restaurant data");

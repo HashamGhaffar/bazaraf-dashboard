@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
@@ -73,8 +73,8 @@ const CustomInputField: React.FC<InputFieldProps> = ({
           <Switch
             checked={value === "AVAILABLE"}
             value={false}
-            onChange={(e) => {
-              onChange(e.target.checked);
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              onChange(event.target.value);
             }}
           />
         )}

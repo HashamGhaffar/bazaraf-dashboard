@@ -32,7 +32,7 @@ const ThemeTable: React.FC<ListComponentProps> = ({
   h3,
   h4,
   h5,
-  h6,
+  // h6, unused for now
   deleteHandel,
   editHandel,
 }) => {
@@ -71,7 +71,7 @@ const ThemeTable: React.FC<ListComponentProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => {
+            {rows.map((row: any, index: number) => {
               console.log(row);
               return (
                 <TableRow key={index} sx={{ borderBottom: "1px solid grey" }}>

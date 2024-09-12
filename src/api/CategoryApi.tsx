@@ -67,7 +67,7 @@ export const categoriesDeleteCategory = async (
 };
 
 export const getCategory = async (
-  accessToken: string,
+  _accessToken: string,
   restaurantId: string,
   categoryId: string
 ): Promise<CategoryFormData | undefined> => {

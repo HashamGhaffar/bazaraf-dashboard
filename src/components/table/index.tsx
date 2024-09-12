@@ -77,7 +77,7 @@ const TableComponent: React.FC<ListComponentProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row: any) => (
               <TableRow
                 key={row.deliveryLocationId}
                 sx={{ borderBottom: "1px solid grey" }}

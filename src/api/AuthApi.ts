@@ -2,6 +2,8 @@ import axios, { AxiosResponse, AxiosError } from "axios";
 import { API_URL } from "../constants/config";
 
 interface AuthResponse {
+  data(data: any): unknown;
+  userId: string;
   accessToken: string;
   refreshToken: string;
 }
@@ -25,7 +27,7 @@ const authLoginUser = async (
       authRequest
     );
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     return error?.response;
   }
 };

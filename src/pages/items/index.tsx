@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -62,7 +62,9 @@ const Items: React.FC = () => {
   const { data: modifierList } = useModifierList();
   const { data: categoryList } = useCategory();
   const initialData = editingItem?.item;
-  const ids = initialData?.modifierList?.map((item) => item.modifierListId);
+  const ids = initialData?.modifierList?.map(
+    (item: { modifierListId: any }) => item.modifierListId
+  );
   const [formData, setFormData] = useState<FormData>({
     name: initialData?.name || "",
     description: initialData?.description || "",
@@ -102,7 +104,7 @@ const Items: React.FC = () => {
   );
 
   const validateForm = (): boolean => {
-    const { name, description, price, categoryId, modifiersId } = formData;
+    const { name, description, price, categoryId } = formData;
     let isValid = true;
     const errorsCopy: Errors = { ...errors };
 
@@ -284,7 +286,7 @@ const Items: React.FC = () => {
                 value={""}
                 onChange={(e) => {
                   const name = e.target.value;
-                  const modifier = modifierList.find(
+                  const modifier: any = modifierList.find(
                     (modifier) => modifier.name === name
                   );
 
@@ -304,8 +306,8 @@ const Items: React.FC = () => {
               />
               <Box sx={styles.tagsContainer}>
                 {formData.modifiersId.map((modifierId) => {
-                  const modifierItem = modifierList.find(
-                    (mod) => mod.modifierListId === modifierId
+                  const modifierItem: any = modifierList.find(
+                    (mod: any) => mod.modifierListId === modifierId
                   );
 
                   if (!modifierItem) return null;

@@ -72,7 +72,9 @@ function LoginForm() {
           navigate("/dashBoard");
         }
       } else {
-        toast.error(response.data);
+        // Dont know the type
+        // toast.error(response.data);
+        toast.error("Something went wrong. Please try again later");
       }
     } catch (error) {
       console.log(error, "error");

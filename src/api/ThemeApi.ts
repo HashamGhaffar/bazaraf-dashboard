@@ -83,6 +83,7 @@ export const deleteTheme = async (
   }
 };
 
+// Not used anywhere yet
 export const getTheme = async (
   restaurantId: string,
   themeId: string

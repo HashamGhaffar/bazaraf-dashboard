@@ -21,6 +21,7 @@ export const createModifier = async (
     name: string;
     description: string;
     priceChange?: number | null;
+    imageUrl?: string | null;
   }
 ): Promise<ModifierFormData | undefined> => {
   const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/modifiers`;

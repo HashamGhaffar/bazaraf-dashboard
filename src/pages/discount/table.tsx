@@ -65,19 +65,28 @@ const TableData: React.FC<TableComponentProps> = ({
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <TableRow key={row.discountId} sx={{ borderBottom: "1px solid grey" }}>
+              <TableRow
+                key={row.discountId}
+                sx={{ borderBottom: "1px solid grey" }}
+              >
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.discountType}</TableCell>
                 <TableCell>{row.discountValue}</TableCell>
                 <TableCell>{row.minimumOrderAmount}</TableCell>
                 <TableCell>
-                  {`${new Date(row.startDate * 1000).toLocaleDateString()} - ${new Date(row.endDate * 1000).toLocaleDateString()}`}
+                  {row.startDate && row.endDate
+                    ? `${new Date(
+                        row.startDate * 1000
+                      ).toLocaleDateString()} - ${new Date(
+                        row.endDate * 1000
+                      ).toLocaleDateString()}`
+                    : "No Date Available"}
                 </TableCell>
-                <TableCell>
-                  {row.isActive ? "True" : "False"}
-                </TableCell>
-                <TableCell sx={{display: 'flex', flexDirection: 'row', border: 'none'}}>
+                <TableCell>{row.isActive ? "True" : "False"}</TableCell>
+                <TableCell
+                  sx={{ display: "flex", flexDirection: "row", border: "none" }}
+                >
                   <IconButton
                     onClick={() => editHandel(row.discountId, row)}
                     sx={{

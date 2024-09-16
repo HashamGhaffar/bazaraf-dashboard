@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   MenuItem,
   Select,
@@ -36,7 +36,7 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({
       </InputLabel>
       <Select
         labelId="dropdown-label"
-        value={value}
+        value={typeof value === "number" ? value.toString() : value}
         onChange={onChange}
         label={title}
         sx={{
@@ -51,7 +51,7 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({
           },
         }}
       >
-        {data.map((item) => (
+        {data.map((item: any) => (
           <MenuItem key={item} value={item} sx={{ color: "black" }}>
             {item}
           </MenuItem>

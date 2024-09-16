@@ -83,8 +83,8 @@ export const deleteTheme = async (
   }
 };
 
+// Not used anywhere yet
 export const getTheme = async (
-  accessToken: string,
   restaurantId: string,
   themeId: string
 ): Promise<Theme | undefined> => {

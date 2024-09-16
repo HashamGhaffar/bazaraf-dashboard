@@ -6,7 +6,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import InputField from "../../components/inputField";
 import DescriptionField from "../../components/descripationField/index";
 import SimpleButton from "../../components/simpleButton";
@@ -44,7 +44,7 @@ const ModifierList: React.FC = () => {
   const maxData = [4, 5, 6];
 
   const initialData = editingModifierList?.modifierList;
-  const [formData, setFormData] = React.useState({
+  const [formData, setFormData] = React.useState<any>({
     name: initialData?.name || "",
     description: initialData?.description || "",
     imageUrl: initialData?.imageUrl || "",
@@ -262,7 +262,7 @@ const ModifierList: React.FC = () => {
               title="Select Modifier"
               value={
                 formData.modifiers
-                  .map((modifier) => modifier.name)
+                  .map((modifier: any) => modifier.name)
                   .join(", ") || ""
               }
               onChange={(e) => {
@@ -271,7 +271,7 @@ const ModifierList: React.FC = () => {
 
                 if (
                   modifier &&
-                  !formData.modifiers.some((mod) => mod.name === name)
+                  !formData.modifiers.some((mod: any) => mod.name === name)
                 ) {
                   setFormData({
                     ...formData,
@@ -285,7 +285,7 @@ const ModifierList: React.FC = () => {
               data={data.map((modifier) => modifier.name)}
             />
             <Box sx={styles.tagsContainer}>
-              {formData.modifiers.map((modifier) => (
+              {formData.modifiers.map((modifier: any) => (
                 <Box
                   sx={styles.tag}
                   key={modifier.name}
@@ -293,7 +293,7 @@ const ModifierList: React.FC = () => {
                     setFormData({
                       ...formData,
                       modifiers: formData.modifiers.filter(
-                        (mod) => mod.name !== modifier.name
+                        (mod: any) => mod.name !== modifier.name
                       ),
                     });
                   }}

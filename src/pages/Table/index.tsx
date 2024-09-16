@@ -28,7 +28,7 @@ function Table() {
     (state: RootState) => state.auth
   );
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     tableNumber: initialData?.tableNumber || "",
     seatCapacity: initialData?.seatCapacity || 0,
     isReserved: initialData?.isReserved || false,

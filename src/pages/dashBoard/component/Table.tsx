@@ -59,7 +59,7 @@ const DetailTable: React.FC<any> = ({ rows }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, index) => {
+            {rows.map((row: any, index: number) => {
               return (
                 <TableRow
                   key={index}

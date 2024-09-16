@@ -6,7 +6,7 @@ import { orderFill, orderList, orderTrunk } from "../../utils";
 import DetailTable from "./component/Table";
 import { useDispatch } from "react-redux";
 import useRestaurantsApi from "../../api/RestaurantsApi";
-import { RootState } from "../../type";
+import { Order, RootState } from "../../type";
 import { useSelector } from "react-redux";
 import { setRestaurant } from "../../store/AuthSlice/index";
 import { getAllOrders } from "../../api/orderApi";
@@ -27,9 +27,11 @@ const DashBoard: React.FC = () => {
     accessToken
   );
 
-  const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(accessToken);
+  const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(
+    accessToken ?? ""
+  );
   const dispatch = useDispatch();
-  const [orderData, setOrderData] = React.useState([]);
+  const [orderData, setOrderData] = React.useState<Order[] | undefined>([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {

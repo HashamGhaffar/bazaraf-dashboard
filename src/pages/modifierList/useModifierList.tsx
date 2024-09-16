@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const useModifierList = () => {
-  const [data, setData] = useState<ModifierList[]>([]);
+  const [data, setData] = useState<(ModifierList | ModifierListFormData)[]>([]);
   const [loading, setLoading] = useState(false);
   const [editingModifierList, setEditingModifierList] = useState<{
     modifierListId: string;
@@ -53,8 +53,8 @@ const useModifierList = () => {
         setData([...data, modifierList]);
         break;
       case "UPDATE": {
-        const updatedData = data.map((item: ModifierList) =>
-          item.modifierListId === modifierList.modifierListId
+        const updatedData = data.map((item: any) =>
+          item.modifierListId === modifierList?.modifierListId
             ? modifierList
             : item
         );
@@ -62,9 +62,9 @@ const useModifierList = () => {
         break;
       }
       case "DELETE": {
-        setData((prevData) =>
+        setData((prevData: any) =>
           prevData.filter(
-            (item) => item.modifierListId !== modifierList.modifierListId
+            (item: any) => item.modifierListId !== modifierList?.modifierListId
           )
         );
         toast.success("Modifier list deleted successfully");
@@ -93,7 +93,7 @@ const useModifierList = () => {
         modifierListId
       );
       if (response) {
-        setModifierListData({ modifierListId } as ModifierList, "DELETE");
+        setModifierListData({ modifierListId } as any, "DELETE");
       }
     } catch (e) {
       console.log("An error occurred while deleting the modifier list", e);

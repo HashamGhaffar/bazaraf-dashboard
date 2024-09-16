@@ -260,7 +260,7 @@ export interface Item {
   createdAt: number;
   updatedAt: number | null;
   category?: Category;
-  modifierList?: ModifierList;
+  modifierList?: ModifierList[];
   modifiersId?: string[];
 }
 
@@ -284,6 +284,7 @@ export interface ItemFormData {
 }
 
 export interface ModifierListFormData {
+  modifierListId: any;
   name: string;
   description?: string;
   modifiers?: Modifier[];
@@ -333,10 +334,9 @@ export interface Discount {
   discountType: "PERCENTAGE" | "FIXED_AMOUNT";
   discountValue: number;
   minimumOrderAmount: number;
-  startDate: number;
-  endDate: number;
-  isActive: boolean; 
+  startDate: number | null;
+  endDate: number | null;
+  isActive: boolean;
   createdAt?: number;
   updatedAt?: number;
 }
-

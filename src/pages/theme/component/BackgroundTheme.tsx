@@ -1,5 +1,5 @@
 import { Box, Typography, Grid, useMediaQuery, useTheme } from "@mui/material";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import InputField from "../../../components/inputField";
 import SimpleButton from "../../../components/simpleButton";
 import TableComponent from "../../../components/themeTable";
@@ -114,16 +114,16 @@ function ThemeComponent() {
 
     const response = themeId
       ? await updateTheme(
-        accessToken,
-        restaurant.restaurantId,
-        themeId,
-        formData as any
-      )
+          accessToken,
+          restaurant.restaurantId,
+          themeId,
+          formData as any
+        )
       : await createTheme(
-        accessToken,
-        restaurant.restaurantId,
-        formData as any
-      );
+          accessToken,
+          restaurant.restaurantId,
+          formData as any
+        );
     setThemeData(response, editingTheme ? "UPDATE" : "ADD");
     setFormData({
       name: "",
@@ -147,9 +147,9 @@ function ThemeComponent() {
       editingTheme ? "Theme Updated Successfully" : "Theme Added Successfully"
     );
   };
-  const handleImageChange = (url: string) => {
-    setFormData({ ...formData, primaryLogo: url });
-  };
+  // const handleImageChange = (url: string) => {
+  //   setFormData({ ...formData, primaryLogo: url });
+  // };
 
   const handleFileChanges = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -165,7 +165,7 @@ function ThemeComponent() {
 
   return (
     <>
-      <Box sx={{ marginX: "15px", backgroundColor: 'white', }}>
+      <Box sx={{ marginX: "15px", backgroundColor: "white" }}>
         <Box
           sx={{
             width: "700px",
@@ -194,7 +194,16 @@ function ThemeComponent() {
               value={formData.name}
               onChange={(e) => handleChange(e, "name")}
             />
-            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, mt: 3, gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                margin: "0 auto",
+                width: { sx: "355px", sm: "470px" },
+                mt: 3,
+                gap: 1,
+              }}
+            >
               <DropdownComponent
                 value={formData.primaryFont}
                 title="Primary font"
@@ -206,7 +215,16 @@ function ThemeComponent() {
                 onChange={handleDropdownChange("secondaryFont")}
               />
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, mt: 3, gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                margin: "0 auto",
+                width: { sx: "355px", sm: "470px" },
+                mt: 3,
+                gap: 1,
+              }}
+            >
               <DropdownComponent
                 title="Primary color"
                 onChange={handleDropdownChange("primaryColor")}
@@ -218,7 +236,15 @@ function ThemeComponent() {
                 value={formData.secondaryColor}
               />
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '0 auto', width: {sx: "355px", sm: "470px"}, gap: 1, }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                margin: "0 auto",
+                width: { sx: "355px", sm: "470px" },
+                gap: 1,
+              }}
+            >
               <CustomInputField
                 Icon={ColorLensIcon}
                 value={formData.backgroundColor}
@@ -228,14 +254,16 @@ function ThemeComponent() {
                 }}
               />
               <div
-                onClick={() => document.getElementById("fileInputss").click()}
+                onClick={() =>
+                  document && document?.getElementById("fileInputss")?.click()
+                }
               >
                 <CustomInputField
                   disabled={true}
                   Icon={ImageIcon}
                   value={formData.backgroundImageUrl}
                   label="Background Image"
-                  onChange={() => { }}
+                  onChange={() => {}}
                 />
               </div>
               <input
@@ -248,11 +276,12 @@ function ThemeComponent() {
             <Box
               sx={{
                 mt: 2,
-                ml: {sx: 0, sm: 12},
-                width: {sx: "355px", sm: "470px"},
-                border: '1px solid gray',
-                borderRadius: '10px',
-              }}>
+                ml: { sx: 0, sm: 12 },
+                width: { sx: "355px", sm: "470px" },
+                border: "1px solid gray",
+                borderRadius: "10px",
+              }}
+            >
               <Grid
                 container
                 style={{
@@ -278,12 +307,20 @@ function ThemeComponent() {
                 </Grid>
               </Grid>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'row', margin: '5px auto', width: isMobile ? '355px' : '470px', gap: 1, }}>
-              <Typography variant="h6" fontSize={"16px"} marginBottom={'0px'}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                margin: "5px auto",
+                width: isMobile ? "355px" : "470px",
+                gap: 1,
+              }}
+            >
+              <Typography variant="h6" fontSize={"16px"} marginBottom={"0px"}>
                 Primary Logo
                 <SelectImage />
               </Typography>
-              <Typography variant="h6" fontSize={"16px"} marginBottom={'0px'}>
+              <Typography variant="h6" fontSize={"16px"} marginBottom={"0px"}>
                 Seconary Logo
                 <SelectImage />
               </Typography>
@@ -291,40 +328,44 @@ function ThemeComponent() {
             <Box
               sx={{
                 mt: 2,
-                ml: {sx: 0, sm: 12},
-                width: {sx: "355px", sm: "470px"},
-                border: '1px solid gray',
-                borderRadius: '10px',
-              }}>
-              <Grid container
+                ml: { sx: 0, sm: 12 },
+                width: { sx: "355px", sm: "470px" },
+                border: "1px solid gray",
+                borderRadius: "10px",
+              }}
+            >
+              <Grid
+                container
                 style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: '20px'
-                }}>
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginLeft: "20px",
+                }}
+              >
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={'Grid View'} required={true} />
+                  <CustomCheckbox label={"Grid View"} required={true} />
                 </Grid>
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={'Text View'} required={true} />
+                  <CustomCheckbox label={"Text View"} required={true} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={'Category View'} required={true} />
+                  <CustomCheckbox label={"Category View"} required={true} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={'List View'} required={true} />
+                  <CustomCheckbox label={"List View"} required={true} />
                 </Grid>
               </Grid>
             </Box>
           </Box>
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               padding: "20px",
-            }} >
+            }}
+          >
             <SimpleButton
               loading={loading}
               text={editingTheme ? "Update" : "Save"}
@@ -345,7 +386,7 @@ function ThemeComponent() {
             mt: 3,
             "@media (max-width: 500px)": {
               padding: "0px",
-              mt: 2
+              mt: 2,
             },
           }}
         >
@@ -358,10 +399,10 @@ function ThemeComponent() {
             h3="Active"
             h4="Default"
             h5={"Edit/Delete"}
-          // h6={""}
+            // h6={""}
           />
         </Box>
-      </Box >
+      </Box>
     </>
   );
 }

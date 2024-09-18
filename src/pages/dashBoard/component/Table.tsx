@@ -8,12 +8,19 @@ import {
   TableRow,
   Paper,
   Box,
+  CircularProgress,
 } from "@mui/material";
 import OrderDetailModal from "../../order";
+import { Order } from "../../../type";
+import { OrderTypeMap, PaymentTypeMap } from "../../../utils/constants";
 
-const DetailTable: React.FC<any> = ({ rows }) => {
+const DetailTable: React.FC<{
+  rows: Order[] | undefined;
+  setrefetchOrders: React.Dispatch<React.SetStateAction<boolean>>;
+  loading: boolean;
+}> = ({ rows, setrefetchOrders, loading }) => {
   const [open, setOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [selectedRow, setSelectedRow] = useState<Order | null>(null);
 
   const handleRowClick = (row: any) => {
     setSelectedRow(row);
@@ -36,44 +43,73 @@ const DetailTable: React.FC<any> = ({ rows }) => {
               >
                 #
               </TableCell>
+
               <TableCell
                 sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
               >
-                Items
+                Customer Phone
               </TableCell>
               <TableCell
                 sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
               >
-                Customers
+                Order Type
               </TableCell>
               <TableCell
                 sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
               >
-                orderType
+                Payment Type
               </TableCell>
               <TableCell
                 sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
               >
                 Status
               </TableCell>
+              <TableCell
+                sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
+              >
+                Total Price
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row: any, index: number) => {
-              return (
-                <TableRow
-                  key={index}
-                  sx={{ borderBottom: "1px solid grey", cursor: "pointer" }}
-                  onClick={() => handleRowClick(row)}
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{row?.carts[0]?.item?.name}</TableCell>
-                  <TableCell>{row?.carts[0]?.item?.price}</TableCell>
-                  <TableCell>{row?.orderType}</TableCell>
-                  <TableCell>{row?.orderStatus}</TableCell>
-                </TableRow>
-              );
-            })}
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "100px",
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : (
+              rows?.map((row: Order, index: number) => {
+                return (
+                  <TableRow
+                    key={index}
+                    sx={{ borderBottom: "1px solid grey", cursor: "pointer" }}
+                    onClick={() => handleRowClick(row)}
+                  >
+                    <TableCell>{index + 1}</TableCell>
+
+                    <TableCell>{row.customerPhoneNumber}</TableCell>
+                    <TableCell>
+                      {row.orderType && OrderTypeMap[row.orderType]}
+                    </TableCell>
+                    <TableCell>
+                      {row.paymentType && PaymentTypeMap[row.paymentType]}
+                    </TableCell>
+                    <TableCell>{row.orderStatus}</TableCell>
+                    <TableCell>{row.amountWithDiscount}</TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -81,18 +117,9 @@ const DetailTable: React.FC<any> = ({ rows }) => {
         <OrderDetailModal
           open={open}
           onClose={handleClose}
-          customerDetails={{
-            name: selectedRow.customer,
-            phoneNumber: selectedRow.phoneNumber,
-            address: "1234 Street, City, Country",
-          }}
-          orderDetails={{
-            id: selectedRow.id,
-            date: "2023-07-10",
-            paymentMethod: "Credit Card",
-            status: selectedRow.status,
-            instructions: "Leave at the door",
-          }}
+          orderDetails={selectedRow}
+          orderId={selectedRow?.orderId ?? ""}
+          setrefetchOrders={setrefetchOrders}
         />
       )}
     </Box>

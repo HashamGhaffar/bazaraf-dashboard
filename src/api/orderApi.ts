@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { API_URL } from "../constants/config";
-import { Order } from "../type";
+import { Order, StatusType } from "../type";
 
 // Handle API errors
 const handleError = (error: AxiosError): void => {
@@ -103,15 +103,19 @@ export const updateOrder = async (
   accessToken: string | null,
   restaurantId: string,
   orderId: string,
-  updateOrderRequest: Order
+  status: StatusType
 ): Promise<Order | undefined> => {
-  const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/orders/${orderId}`;
+  const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/orders/${orderId}?status=${status}`;
   try {
-    const response = await axios.put(endpointUrl, updateOrderRequest, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await axios.put(
+      endpointUrl,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     handleError(error as AxiosError);

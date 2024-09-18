@@ -10,32 +10,23 @@ import { Order, RootState } from "../../type";
 import { useSelector } from "react-redux";
 import { setRestaurant } from "../../store/AuthSlice/index";
 import { getAllOrders } from "../../api/orderApi";
-// const data = [
-//   {
-//     id: "1",
-//     items: "Pizza",
-//     customer: "Amina",
-//     phoneNumber: "0345767676",
-//     status: "pending",
-//   },
-// ];
 
 const DashBoard: React.FC = () => {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
-  console.log(
-    "accessTokenaccessTokenaccessTokenaccessTokenaccessToken",
-    accessToken
-  );
 
   const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(
     accessToken ?? ""
   );
   const dispatch = useDispatch();
   const [orderData, setOrderData] = React.useState<Order[] | undefined>([]);
+  const [refetchOrders, setrefetchOrders] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await restaurantsGetAllUserRestaurant(user);
 
@@ -45,13 +36,15 @@ const DashBoard: React.FC = () => {
         );
         setOrderData(fetchData);
         dispatch(setRestaurant(response[0]));
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching restaurant data 🤷🏻:", error);
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [refetchOrders]);
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -140,7 +133,11 @@ const DashBoard: React.FC = () => {
           >
             Orders
           </Typography>
-          <DetailTable rows={orderData} />
+          <DetailTable
+            rows={orderData}
+            setrefetchOrders={setrefetchOrders}
+            loading={loading}
+          />
         </Box>
       </Box>
     </Box>

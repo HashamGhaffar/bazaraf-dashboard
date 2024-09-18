@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Modal,
@@ -12,51 +12,92 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import OrderTable from "./component/orderTable";
-import { modifier } from "../../utils";
+import { Order, StatusType } from "../../type";
+import { updateOrder } from "../../api/orderApi";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { PaymentTypeMap, statusOptions } from "../../utils/constants";
 
-const data = [
-  {
-    thumbnail: modifier,
-    name: "Drink",
-    itemPrice: "Rs.12",
-    quantity: 2,
-    modifier: "Extra Cheese",
-    price: "Rs.18",
-  },
-];
+interface OrderItems {
+  thumbnail: string;
+  name: string;
+  itemPrice: string;
+  quantity: number;
+  modifier: string;
+  price: string;
+}
 
 interface OrderDetailModalProps {
   open: boolean;
   onClose: () => void;
-  customerDetails: {
-    name: string;
-    phoneNumber: string;
-    address: string;
-  };
-  orderDetails: {
-    id: string;
-    date: string;
-    paymentMethod: string;
-    status: string;
-    instructions?: string;
-  };
+  orderDetails: Order | null;
+  orderId: string;
+  setrefetchOrders: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   open,
   onClose,
-  customerDetails,
   orderDetails,
+  orderId,
+  setrefetchOrders,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<StatusType | "">("");
+  const [orderItems, setOrderItems] = useState<OrderItems[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    setSelectedValue(event.target.value as string);
+  const accessToken: string = useSelector(
+    (state: any) => state.auth.accessToken
+  );
+  const restaurantId: string = useSelector(
+    (state: any) => state.auth.restaurant.restaurantId
+  );
+
+  useEffect(() => {
+    if (orderDetails && orderDetails?.orderStatus) {
+      setSelectedValue(orderDetails?.orderStatus ?? "");
+    }
+    if (orderDetails && orderDetails.carts.length) {
+      const items: OrderItems[] = orderDetails.carts.map((cart: any) => {
+        let modifiersPrice: number = 0;
+        cart.selectedModifiers &&
+          cart.selectedModifiers.forEach((modifier: any) => {
+            if (modifier?.priceChange) {
+              modifiersPrice += modifier?.priceChange;
+            }
+          });
+        return {
+          name: cart.item.name,
+          thumbnail: cart.item.imageUrl,
+          itemPrice: cart.item.price,
+          quantity: cart.quantity,
+          modifier: cart.selectedModifiers.length
+            ? cart.selectedModifiers.map((mod: any) => mod.name).join(", ")
+            : "No Modifier",
+          price: String((cart.item.price + modifiersPrice) * cart.quantity),
+        };
+      });
+      setOrderItems(items);
+    }
+  }, []);
+
+  const handleStatusChange = async (event: SelectChangeEvent<StatusType>) => {
+    const newStatus = event.target.value as StatusType;
+
+    setSelectedValue(newStatus);
+
+    if (orderDetails) {
+      try {
+        await updateOrder(accessToken, restaurantId, orderId ?? "", newStatus);
+        setrefetchOrders((prev) => !prev);
+        toast.success("Order status updated successfully");
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
-
 
   return (
     <Modal
@@ -99,14 +140,16 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             >
               Customer Details
             </Typography>
+            {/* Todo: Add customer name */}
+            {/* <Typography variant="body2" sx={{ fontSize: "18px" }}>
+              Name:
+            </Typography> */}
             <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Name: {customerDetails.name}
+              Phone: {orderDetails?.customerPhoneNumber}
             </Typography>
             <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Phone: {customerDetails.phoneNumber}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Address: {customerDetails.address}
+              {orderDetails?.pickupTime ? "Pickup Time" : "Address"}:{" "}
+              {orderDetails?.pickupTime || orderDetails?.completeAddress}
             </Typography>
           </Box>
 
@@ -117,34 +160,40 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             >
               Order Details
             </Typography>
+            {/* Todo: Add order id */}
+            {/* <Typography variant="body2" sx={{ fontSize: "18px" }}>
+              ID: {orderDetails?.orderId}
+            </Typography> */}
             <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              ID: {orderDetails.id}
+              Date:{" "}
+              {new Date(orderDetails?.createdAt ?? "").toLocaleDateString()}
             </Typography>
             <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Date: {orderDetails.date}
+              Payment Method:{" "}
+              {orderDetails?.paymentType &&
+                PaymentTypeMap[orderDetails?.paymentType]}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Payment Method: {orderDetails.paymentMethod}
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Typography variant="body2" sx={{ fontSize: '18px' }}>Status:</Typography>
-              <FormControl sx={{ marginLeft: '5px' }}>
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <Typography variant="body2" sx={{ fontSize: "18px" }}>
+                Status:
+              </Typography>
+              <FormControl sx={{ marginLeft: "5px" }}>
                 <Select
                   value={selectedValue}
                   label="Select Option"
-                  onChange={handleChange}
+                  onChange={handleStatusChange}
                   sx={{
-                    height: '30px',
-                    width: '150px',
-                    '.MuiSelect-select': {
-                      paddingTop: '8px',
-                      paddingBottom: '8px',
+                    height: "30px",
+                    width: "150px",
+                    ".MuiSelect-select": {
+                      paddingTop: "8px",
+                      paddingBottom: "8px",
                     },
                   }}
                   MenuProps={{
                     PaperProps: {
                       sx: {
-                        maxHeight: '200px',
+                        maxHeight: "200px",
                       },
                     },
                   }}
@@ -152,32 +201,39 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="option1">Pending</MenuItem>
+
+                  {statusOptions.map((option: StatusType) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
-            {orderDetails.instructions && (
+            {orderDetails && (
               <Typography variant="body2" sx={{ fontSize: "18px" }}>
-                Instructions: {orderDetails.instructions}
+                Instructions: {orderDetails?.instructions}
               </Typography>
             )}
           </Box>
         </Box>
         <Box sx={{ mt: 4 }}>
-          <OrderTable rows={data} />
+          <OrderTable rows={orderItems} />
         </Box>
+
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Amount: 200
+            Amount: {orderDetails?.amountWithoutDiscount}
           </Typography>
           <Typography variant="body2" sx={{ fontSize: "18px" }}>
             Discount: 10%
           </Typography>
+          {/* { TODO: Add VAT } */}
           <Typography variant="body2" sx={{ fontSize: "18px" }}>
             VAT: 5%
           </Typography>
           <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Total Price: RS.230
+            Total Price: RS.{orderDetails?.amountWithDiscount}
           </Typography>
         </Box>
       </Paper>

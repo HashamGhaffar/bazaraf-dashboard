@@ -10,6 +10,15 @@ import { Order, RootState } from "../../type";
 import { useSelector } from "react-redux";
 import { setRestaurant } from "../../store/AuthSlice/index";
 import { getAllOrders } from "../../api/orderApi";
+import {
+  getAverageOrderValue,
+  getCancelledOrders,
+  getCompletedOrders,
+  getNewOrders,
+  getOrderConversionRate,
+  getTotalSales,
+} from "../../utils/helpers";
+import { get } from "../../api/apiService";
 
 const DashBoard: React.FC = () => {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
@@ -57,22 +66,22 @@ const DashBoard: React.FC = () => {
         }}
       >
         <SellingOrderCard
-          orderCount={10}
+          orderCount={getCompletedOrders(orderData ?? [])}
           backgroundImage={orderTrunk}
           OrderText="Selling Orders"
           sx={{ backgroundColor: "#468A6C" }}
         />
         <SellingOrderCard
-          orderCount={12}
+          orderCount={getCancelledOrders(orderData ?? [])}
           backgroundImage={orderList}
-          OrderText="Product Sells"
-          sx={{ backgroundColor: "#194D7C" }}
+          OrderText="Cancelled Orders"
+          sx={{ backgroundColor: "#B12A20" }}
         />
         <SellingOrderCard
-          orderCount={14}
+          orderCount={getNewOrders(orderData ?? [])}
           backgroundImage={orderFill}
           OrderText="New Orders"
-          sx={{ backgroundColor: "#B12A20" }}
+          sx={{ backgroundColor: "#194D7C" }}
         />
       </Box>
       <Box
@@ -96,20 +105,20 @@ const DashBoard: React.FC = () => {
         >
           <OrderDetailCard
             value="Total Sales"
-            averageOrderValue={86784.93}
+            averageOrderValue={getTotalSales(orderData ?? [])}
             percentage={12.5}
             fromDate="Jan"
           />
           <OrderDetailCard
             value="Avg. Order Value"
-            averageOrderValue={234.14}
+            averageOrderValue={getAverageOrderValue(orderData ?? [])}
             percentage={12.5}
             fromDate="Jan"
           />
           <OrderDetailCard
             value="Conversion Rate"
-            averageOrderValue={82.94}
-            percentage={0.32}
+            averageOrderValue={getOrderConversionRate(orderData ?? []).sales}
+            percentage={getOrderConversionRate(orderData ?? []).conversionRate}
             fromDate="Jan"
           />
         </Box>

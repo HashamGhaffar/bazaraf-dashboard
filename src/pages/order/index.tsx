@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+
 import {
   Typography,
   Modal,
@@ -11,11 +12,16 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import OrderTable from "./component/orderTable";
-import { Order, StatusType } from "../../type";
-import { updateOrder } from "../../api/orderApi";
+import Table from '@mui/material/Table';
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+
+import OrderTable from "./component/orderTable";
+import { updateOrder } from "../../api/orderApi";
+
+import { Order, StatusType } from "../../type";
 import { PaymentTypeMap, statusOptions } from "../../utils/constants";
 
 interface OrderItems {
@@ -99,6 +105,8 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
     }
   };
 
+  const tableCellStyle = { border: "none", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }
+
   return (
     <Modal
       open={open}
@@ -111,97 +119,89 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           position: "absolute",
           top: "50%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: isMobile ? "400px" : "auto",
-          height: isMobile ? "700px" : "auto",
+          transform: "translate(-50% , -50%)",
+          maxHeight: { xs: "600px", sm: "800px", md: "823px" },
+          maxWidth: { xs: "400px", sm: "560px", md: "770px" },
           bgcolor: "background.paper",
+          borderRadius: "8px",
           boxShadow: 24,
           p: isMobile ? 1 : 4,
+          padding: { xs: "50px 25px 10px 25px", md: "", sm: "5px 60px 50px 60px" }
         }}
       >
         <Typography
           variant="h6"
           component="h1"
-          sx={{ textAlign: "center", fontSize: "30px" }}
+          sx={{ textAlign: "center", fontSize: "40px", fontWeight: "600", display: { xs: "none", sm: "block" } }}
         >
-          Order Detail
+          Orders
         </Typography>
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
+            gap: "8px",
             justifyContent: "space-between",
           }}
         >
           <Box>
             <Typography
               variant="subtitle1"
-              sx={{ fontWeight: "600", fontSize: "18px" }}
+              sx={{ fontWeight: "700", fontSize: { xs: "13px", md: "16px" } }}
             >
               Customer Details
             </Typography>
             {/* Todo: Add customer name */}
-            {/* <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            {/* <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
               Name:
             </Typography> */}
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Phone: {orderDetails?.customerPhoneNumber}
+            <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
+              Phone Number: {orderDetails?.customerPhoneNumber}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
               {orderDetails?.pickupTime ? "Pickup Time" : "Address"}:{" "}
               {orderDetails?.pickupTime || orderDetails?.completeAddress}
             </Typography>
           </Box>
 
-          <Box>
+          <Box sx={{ minWidth: "213px" }}>
             <Typography
               variant="subtitle1"
-              sx={{ fontWeight: "600", fontSize: "18px" }}
+              sx={{ fontWeight: "700", fontSize: { xs: "13px", md: "16px" } }}
             >
               Order Details
             </Typography>
             {/* Todo: Add order id */}
-            {/* <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            {/* <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
               ID: {orderDetails?.orderId}
             </Typography> */}
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
               Date:{" "}
               {new Date(orderDetails?.createdAt ?? "").toLocaleDateString()}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
               Payment Method:{" "}
               {orderDetails?.paymentType &&
                 PaymentTypeMap[orderDetails?.paymentType]}
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <Typography variant="body2" sx={{ fontSize: "18px" }}>
+            {orderDetails && (
+              <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
+                Instructions: {orderDetails?.instructions}
+              </Typography>
+            )}
+            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "baseline" }}>
+              <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
                 Status:
               </Typography>
-              <FormControl sx={{ marginLeft: "5px" }}>
+              <FormControl variant="standard" sx={{ marginLeft: "5px", minWidth: 120 }}>
                 <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
                   value={selectedValue}
-                  label="Select Option"
                   onChange={handleStatusChange}
-                  sx={{
-                    height: "30px",
-                    width: "150px",
-                    ".MuiSelect-select": {
-                      paddingTop: "8px",
-                      paddingBottom: "8px",
-                    },
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: "200px",
-                      },
-                    },
-                  }}
+                  label="Age"
+                  sx={{ border: "none", fontSize: { xs: "13px", md: "16px" } }}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-
                   {statusOptions.map((option: StatusType) => (
                     <MenuItem key={option} value={option}>
                       {option}
@@ -210,34 +210,35 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 </Select>
               </FormControl>
             </Box>
-            {orderDetails && (
-              <Typography variant="body2" sx={{ fontSize: "18px" }}>
-                Instructions: {orderDetails?.instructions}
-              </Typography>
-            )}
           </Box>
         </Box>
         <Box sx={{ mt: 4 }}>
           <OrderTable rows={orderItems} />
         </Box>
 
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Amount: {orderDetails?.amountWithoutDiscount}
-          </Typography>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Discount: 10%
-          </Typography>
+        <Table sx={{ width: "auto", float: "right", mt: 2 }}>
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>Amount:</TableCell>
+            <TableCell sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}>{orderDetails?.amountWithoutDiscount}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>Discount:</TableCell>
+            <TableCell sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}>0%</TableCell>
+          </TableRow>
+
           {/* { TODO: Add VAT } */}
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            VAT: 5%
-          </Typography>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Total Price: RS.{orderDetails?.amountWithDiscount}
-          </Typography>
-        </Box>
+          {/* <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>VAT:</TableCell>
+            <TableCell sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}>5%</TableCell>
+          </TableRow> */}
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>Total Price:</TableCell>
+            <TableCell sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}>RS.{orderDetails?.amountWithDiscount}</TableCell>
+          </TableRow>
+        </Table>
+
       </Paper>
-    </Modal>
+    </Modal >
   );
 };
 

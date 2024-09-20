@@ -38,7 +38,7 @@ interface OrderDetailModalProps {
   onClose: () => void;
   orderDetails: Order | null;
   orderId: string;
-  setrefetchOrders: React.Dispatch<React.SetStateAction<boolean>>;
+  handleStatusChange: (status: StatusType, orderId: string) => void;
 }
 
 const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
@@ -46,20 +46,13 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   onClose,
   orderDetails,
   orderId,
-  setrefetchOrders,
+  handleStatusChange,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [selectedValue, setSelectedValue] = useState<StatusType | "">("");
   const [orderItems, setOrderItems] = useState<OrderItems[]>([]);
-
-  const accessToken: string = useSelector(
-    (state: any) => state.auth.accessToken
-  );
-  const restaurantId: string = useSelector(
-    (state: any) => state.auth.restaurant.restaurantId
-  );
 
   useEffect(() => {
     if (orderDetails && orderDetails?.orderStatus) {
@@ -88,27 +81,6 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
       setOrderItems(items);
     }
   }, []);
-
-  const handleStatusChange = async (event: SelectChangeEvent<StatusType>) => {
-    const newStatus = event.target.value as StatusType;
-
-    setSelectedValue(newStatus);
-
-    if (orderDetails) {
-      try {
-        await updateOrder(
-          accessToken,
-          restaurantId,
-          orderDetails.orderId ?? "",
-          newStatus
-        );
-        setrefetchOrders((prev) => !prev);
-        toast.success("Order status updated successfully");
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
 
   const tableCellStyle = {
     border: "none",
@@ -245,7 +217,11 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
                   value={selectedValue}
-                  onChange={handleStatusChange}
+                  onChange={(e) => {
+                    const newStatus = e.target.value as StatusType;
+                    setSelectedValue(newStatus);
+                    handleStatusChange(newStatus, orderDetails?.orderId ?? "");
+                  }}
                   label="Age"
                   sx={{ border: "none", fontSize: { xs: "13px", md: "16px" } }}
                 >

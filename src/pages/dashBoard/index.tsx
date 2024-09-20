@@ -6,10 +6,10 @@ import { orderFill, orderList, orderTrunk } from "../../utils";
 import DetailTable from "./component/Table";
 import { useDispatch } from "react-redux";
 import useRestaurantsApi from "../../api/RestaurantsApi";
-import { Order, RootState } from "../../type";
+import { Order, RootState, StatusType } from "../../type";
 import { useSelector } from "react-redux";
 import { setRestaurant } from "../../store/AuthSlice/index";
-import { getAllOrders } from "../../api/orderApi";
+import { getAllOrders, updateOrder } from "../../api/orderApi";
 import {
   getAverageOrderValue,
   getCancelledOrders,
@@ -18,10 +18,13 @@ import {
   getOrderConversionRate,
   getTotalSales,
 } from "../../utils/helpers";
-import { get } from "../../api/apiService";
+import { toast } from "react-toastify";
 
 const DashBoard: React.FC = () => {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
+  const restaurantId: string = useSelector(
+    (state: any) => state.auth.restaurant.restaurantId
+  );
 
   const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(
     accessToken ?? ""
@@ -54,6 +57,18 @@ const DashBoard: React.FC = () => {
 
     fetchData();
   }, [refetchOrders]);
+
+  const handleStatusChange = async (newStatus: StatusType, orderId: string) => {
+    try {
+      await updateOrder(accessToken, restaurantId, orderId, newStatus);
+      setrefetchOrders(!refetchOrders);
+      toast.success("Order status updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update order status");
+    }
+  };
+
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -144,8 +159,8 @@ const DashBoard: React.FC = () => {
           </Typography>
           <DetailTable
             rows={orderData}
-            setrefetchOrders={setrefetchOrders}
             loading={loading}
+            handleStatusChange={handleStatusChange}
           />
         </Box>
       </Box>

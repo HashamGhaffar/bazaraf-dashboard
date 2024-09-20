@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Table,
   TableBody,
@@ -8,18 +9,26 @@ import {
   TableRow,
   Paper,
   Box,
-  CircularProgress,
   Skeleton,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
+
 import OrderDetailModal from "../../order";
-import { Order } from "../../../type";
-import { OrderTypeMap, PaymentTypeMap } from "../../../utils/constants";
+
+import { Order, StatusType } from "../../../type";
+import {
+  OrderTypeMap,
+  PaymentTypeMap,
+  statusOptions,
+} from "../../../utils/constants";
 
 const DetailTable: React.FC<{
   rows: Order[] | undefined;
-  setrefetchOrders: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
-}> = ({ rows, setrefetchOrders, loading }) => {
+  handleStatusChange: (status: StatusType, orderId: string) => void;
+}> = ({ rows, loading, handleStatusChange }) => {
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<Order | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -113,7 +122,36 @@ const DetailTable: React.FC<{
                     <TableCell>
                       {row.paymentType && PaymentTypeMap[row.paymentType]}
                     </TableCell>
-                    <TableCell>{row.orderStatus}</TableCell>
+                    <TableCell>
+                      {/* {row.orderStatus} */}
+                      <FormControl
+                        variant="standard"
+                        sx={{ marginLeft: "5px", minWidth: 120 }}
+                      >
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          defaultValue={row.orderStatus}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            const newStatus = e.target.value as StatusType;
+                            handleStatusChange(newStatus, row.orderId ?? "");
+                            return e;
+                          }}
+                          label="Age"
+                          sx={{
+                            border: "none",
+                            fontSize: { xs: "13px", md: "16px" },
+                          }}
+                        >
+                          {statusOptions.map((option: StatusType) => (
+                            <MenuItem key={option} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
                     <TableCell>{row.amountWithDiscount}</TableCell>
                   </TableRow>
                 ))}
@@ -126,7 +164,7 @@ const DetailTable: React.FC<{
           onClose={handleClose}
           orderDetails={selectedRow}
           orderId={selectedIndex.toString()}
-          setrefetchOrders={setrefetchOrders}
+          handleStatusChange={handleStatusChange}
         />
       )}
     </Box>

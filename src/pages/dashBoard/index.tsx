@@ -120,22 +120,23 @@ const DashBoard: React.FC = () => {
         >
           <OrderDetailCard
             value="Total Sales"
-            averageOrderValue={getTotalSales(orderData ?? [])}
+            averageOrderValue={getTotalSales(orderData ?? []) ?? 0}
             percentage={12.5}
             fromDate="Jan"
           />
           <OrderDetailCard
             value="Avg. Order Value"
-            averageOrderValue={getAverageOrderValue(orderData ?? [])}
+            averageOrderValue={getAverageOrderValue(orderData ?? []) ?? 0}
             percentage={12.5}
             fromDate="Jan"
           />
-          <OrderDetailCard
+          {/* TODO: Add Conversion Rate */}
+          {/* <OrderDetailCard
             value="Conversion Rate"
             averageOrderValue={getOrderConversionRate(orderData ?? []).sales}
             percentage={getOrderConversionRate(orderData ?? []).conversionRate}
             fromDate="Jan"
-          />
+          /> */}
         </Box>
         <Box
           sx={{

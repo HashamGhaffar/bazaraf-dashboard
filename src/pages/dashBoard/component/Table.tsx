@@ -9,6 +9,7 @@ import {
   Paper,
   Box,
   CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import OrderDetailModal from "../../order";
 import { Order } from "../../../type";
@@ -21,21 +22,24 @@ const DetailTable: React.FC<{
 }> = ({ rows, setrefetchOrders, loading }) => {
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<Order | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
-  const handleRowClick = (row: any) => {
+  const handleRowClick = (row: Order, index: number) => {
     setSelectedRow(row);
+    setSelectedIndex(index + 1);
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
     setSelectedRow(null);
+    setSelectedIndex(0);
   };
 
   return (
     <Box sx={{ overflowX: "auto" }}>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} aria-label="order table">
           <TableHead>
             <TableRow sx={{ backgroundColor: "primary.main" }}>
               <TableCell
@@ -43,7 +47,6 @@ const DetailTable: React.FC<{
               >
                 #
               </TableCell>
-
               <TableCell
                 sx={{ color: "white", fontSize: "14px", fontWeight: "400" }}
               >
@@ -72,31 +75,37 @@ const DetailTable: React.FC<{
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "100px",
-                    }}
-                  >
-                    <CircularProgress />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ) : (
-              rows?.map((row: Order, index: number) => {
-                return (
+            {loading
+              ? Array.from(new Array(10)).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Skeleton variant="text" width={20} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={120} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={100} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={100} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={80} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width={60} />
+                    </TableCell>
+                  </TableRow>
+                ))
+              : // Display actual data once it's loaded
+                rows?.map((row: Order, index: number) => (
                   <TableRow
                     key={index}
                     sx={{ borderBottom: "1px solid grey", cursor: "pointer" }}
-                    onClick={() => handleRowClick(row)}
+                    onClick={() => handleRowClick(row, index)}
                   >
                     <TableCell>{index + 1}</TableCell>
-
                     <TableCell>{row.customerPhoneNumber}</TableCell>
                     <TableCell>
                       {row.orderType && OrderTypeMap[row.orderType]}
@@ -107,9 +116,7 @@ const DetailTable: React.FC<{
                     <TableCell>{row.orderStatus}</TableCell>
                     <TableCell>{row.amountWithDiscount}</TableCell>
                   </TableRow>
-                );
-              })
-            )}
+                ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -118,7 +125,7 @@ const DetailTable: React.FC<{
           open={open}
           onClose={handleClose}
           orderDetails={selectedRow}
-          orderId={selectedRow?.orderId ?? ""}
+          orderId={selectedIndex.toString()}
           setrefetchOrders={setrefetchOrders}
         />
       )}

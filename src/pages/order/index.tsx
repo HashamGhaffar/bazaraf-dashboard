@@ -10,19 +10,15 @@ import {
   FormControl,
   Select,
   MenuItem,
-  SelectChangeEvent,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
 
 import OrderTable from "./component/orderTable";
-import { updateOrder } from "../../api/orderApi";
 
 import { Order, StatusType } from "../../type";
-import { PaymentTypeMap, statusOptions } from "../../utils/constants";
+import { OrderTypeMap, PaymentTypeMap, statusOptions } from "../../utils/constants";
 
 interface OrderItems {
   thumbnail: string;
@@ -101,8 +97,12 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50% , -50%)",
-          maxHeight: { xs: "600px", sm: "800px", md: "823px" },
-          maxWidth: { xs: "400px", sm: "560px", md: "770px" },
+          maxHeight: "90vh",
+          minHeight: "80vh",
+          height: "100%",
+          maxWidth: "80%",
+          minWidth: "70%",
+          width: "70%",
           bgcolor: "background.paper",
           borderRadius: "8px",
           boxShadow: 24,
@@ -177,6 +177,12 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               variant="body2"
               sx={{ fontSize: { xs: "13px", md: "16px" } }}
             >
+              Order Type: {orderDetails?.orderType && OrderTypeMap[orderDetails.orderType]}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
               Date:{" "}
               {new Date(orderDetails?.createdAt ?? "").toLocaleDateString()}
             </Typography>
@@ -226,7 +232,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   sx={{ border: "none", fontSize: { xs: "13px", md: "16px" } }}
                 >
                   {statusOptions.map((option: StatusType) => (
-                    <MenuItem key={option} value={option}>
+                    <MenuItem sx={{ fontSize: { xs: "13px", md: "16px" } }} key={option} value={option}>
                       {option}
                     </MenuItem>
                   ))}
@@ -239,7 +245,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           <OrderTable rows={orderItems} />
         </Box>
 
-        <Table sx={{ width: "auto", float: "right", mt: 2 }}>
+        <Table sx={{ width: "auto", float: "right", mt: 2, marginRight: "21px" }}>
           <TableRow>
             <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>
               Amount:
@@ -273,7 +279,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <TableCell
               sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
             >
-              RS.{orderDetails?.amountWithDiscount}
+              ADE.{orderDetails?.amountWithDiscount}
             </TableCell>
           </TableRow>
         </Table>

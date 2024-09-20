@@ -86,75 +86,76 @@ const DetailTable: React.FC<{
           <TableBody>
             {loading
               ? Array.from(new Array(10)).map((_, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Skeleton variant="text" width={20} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={120} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={100} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={100} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={80} />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton variant="text" width={60} />
-                    </TableCell>
-                  </TableRow>
-                ))
+                <TableRow key={index}>
+                  <TableCell>
+                    <Skeleton variant="text" width={20} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={120} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={100} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={100} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={80} />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton variant="text" width={60} />
+                  </TableCell>
+                </TableRow>
+              ))
               : // Display actual data once it's loaded
-                rows?.map((row: Order, index: number) => (
-                  <TableRow
-                    key={index}
-                    sx={{ borderBottom: "1px solid grey", cursor: "pointer" }}
-                    onClick={() => handleRowClick(row, index)}
-                  >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row.customerPhoneNumber}</TableCell>
-                    <TableCell>
-                      {row.orderType && OrderTypeMap[row.orderType]}
-                    </TableCell>
-                    <TableCell>
-                      {row.paymentType && PaymentTypeMap[row.paymentType]}
-                    </TableCell>
-                    <TableCell>
-                      {/* {row.orderStatus} */}
-                      <FormControl
-                        variant="standard"
-                        sx={{ marginLeft: "5px", minWidth: 120 }}
+              rows?.map((row: Order, index: number) => (
+                <TableRow
+                  key={index}
+                  sx={{ borderBottom: "1px solid grey", cursor: "pointer" }}
+                  onClick={() => handleRowClick(row, index)}
+                >
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.customerPhoneNumber}</TableCell>
+                  <TableCell>
+                    {row.orderType && OrderTypeMap[row.orderType]}
+                  </TableCell>
+                  <TableCell>
+                    {row.paymentType && PaymentTypeMap[row.paymentType]}
+                  </TableCell>
+                  <TableCell>
+                    {/* {row.orderStatus} */}
+                    <FormControl
+                      variant="standard"
+                      sx={{ marginLeft: "5px", minWidth: 120 }}
+                    >
+                      <Select
+                        labelId="demo-simple-select-standard-label"
+                        id="demo-simple-select-standard"
+                        defaultValue={row.orderStatus}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => {
+                          const newStatus = e.target.value as StatusType;
+                          handleStatusChange(newStatus, row.orderId ?? "");
+                          return e;
+                        }}
+                        label="Age"
+                        sx={{
+                          border: "none",
+                          fontSize: "14px",
+                          textTransform: "capitalize"
+                        }}
                       >
-                        <Select
-                          labelId="demo-simple-select-standard-label"
-                          id="demo-simple-select-standard"
-                          defaultValue={row.orderStatus}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => {
-                            const newStatus = e.target.value as StatusType;
-                            handleStatusChange(newStatus, row.orderId ?? "");
-                            return e;
-                          }}
-                          label="Age"
-                          sx={{
-                            border: "none",
-                            fontSize: { xs: "13px", md: "16px" },
-                          }}
-                        >
-                          {statusOptions.map((option: StatusType) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell>{row.amountWithDiscount}</TableCell>
-                  </TableRow>
-                ))}
+                        {statusOptions.map((option: StatusType) => (
+                          <MenuItem sx={{ textTransform: "capitalize !important", fontSize: "14px" }} key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell>{row.amountWithDiscount}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

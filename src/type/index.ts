@@ -110,6 +110,7 @@ export interface Order {
   deliveryLocationId: string;
   restaurantId: string;
 }
+
 export enum PaymentType {
   CREDIT_CARD = "CREDIT_CARD",
   DEBIT_CARD = "DEBIT_CARD",

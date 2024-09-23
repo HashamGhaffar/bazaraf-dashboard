@@ -114,16 +114,16 @@ function ThemeComponent() {
 
     const response = themeId
       ? await updateTheme(
-          accessToken,
-          restaurant.restaurantId,
-          themeId,
-          formData as any
-        )
+        accessToken,
+        restaurant.restaurantId,
+        themeId,
+        formData as any
+      )
       : await createTheme(
-          accessToken,
-          restaurant.restaurantId,
-          formData as any
-        );
+        accessToken,
+        restaurant.restaurantId,
+        formData as any
+      );
     setThemeData(response, editingTheme ? "UPDATE" : "ADD");
     setFormData({
       name: "",
@@ -246,6 +246,7 @@ function ThemeComponent() {
               }}
             >
               <CustomInputField
+                type='color'
                 Icon={ColorLensIcon}
                 value={formData.backgroundColor}
                 label="Background Color"
@@ -263,7 +264,7 @@ function ThemeComponent() {
                   Icon={ImageIcon}
                   value={formData.backgroundImageUrl}
                   label="Background Image"
-                  onChange={() => {}}
+                  onChange={() => { }}
                 />
               </div>
               <input
@@ -399,7 +400,7 @@ function ThemeComponent() {
             h3="Active"
             h4="Default"
             h5={"Edit/Delete"}
-            // h6={""}
+          // h6={""}
           />
         </Box>
       </Box>

@@ -27,9 +27,7 @@ const CustomInputField: React.FC<InputFieldProps> = ({
   type = "default",
   disabled = false,
 }) => {
-  console.log(value, "value");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     onChange(event.target.value);
   };
 
@@ -69,6 +67,7 @@ const CustomInputField: React.FC<InputFieldProps> = ({
           value={value}
           onChange={handleChange}
         />
+
         {showSwitch && (
           <Switch
             checked={value === "AVAILABLE"}

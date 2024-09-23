@@ -81,20 +81,74 @@ export interface AuthState {
   industry: any;
 }
 
-interface Cart {
+// Order types starts
+export interface Cart {
+  cartId: string;
   quantity: number;
+  item: Item;
+  selectedModifiers: Modifier[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface OrderDiscount {
+  discountId: string;
+  discountType: DiscountTypes;
+  discountValue: number;
 }
 
 export interface Order {
+  orderId: string;
   customerId: string;
-  restaurantId: string;
-  orderStatus: "PENDING";
-  paymentType: "CREDIT_CARD";
-  orderType: "DELIVERY";
-  carts: Cart[];
+  customerPhoneNumber: string;
+  completeAddress: string | null;
+  instructions: string | null;
+  amountWithoutDiscount: number;
+  amountWithDiscount: number;
+  discount: OrderDiscount;
   pickupTime: string;
+  carts: Cart[];
+  orderStatus: StatusType;
+  paymentType: PaymentType;
+  orderType: OrderType;
+  createdAt: number;
+  updatedAt: number;
   deliveryLocationId: string;
+  restaurantId: string;
 }
+
+export enum DiscountTypes {
+  FIXED_AMOUNT = "FIXED_AMOUNT",
+  PERCENTAGE = "PERCENTAGE",
+}
+
+export enum PaymentType {
+  CREDIT_CARD = "CREDIT_CARD",
+  DEBIT_CARD = "DEBIT_CARD",
+  PAYPAL = "PAYPAL",
+  CRYPTO = "CRYPTO",
+  CASH = "CASH",
+  OTHER = "OTHER",
+  CASH_ON_DELIVERY = "CASH_ON_DELIVERY",
+}
+
+export enum StatusType {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
+  RETURNED = "RETURNED",
+}
+
+export enum OrderType {
+  DELIVERY = "DELIVERY",
+  DINE_IN = "DINE_IN",
+  TAKE_AWAY = "TAKE_AWAY",
+  DRIVE_THRU = "DRIVE_THRU",
+}
+
+// Order types ends
 
 export interface Address {
   addressId: string;

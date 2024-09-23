@@ -6,25 +6,23 @@ import { orderFill, orderList, orderTrunk } from "../../utils";
 import DetailTable from "./component/Table";
 import { useDispatch } from "react-redux";
 import useRestaurantsApi from "../../api/RestaurantsApi";
-import { Order, RootState } from "../../type";
+import { Order, RootState, StatusType } from "../../type";
 import { useSelector } from "react-redux";
 import { setRestaurant } from "../../store/AuthSlice/index";
-import { getAllOrders } from "../../api/orderApi";
-// const data = [
-//   {
-//     id: "1",
-//     items: "Pizza",
-//     customer: "Amina",
-//     phoneNumber: "0345767676",
-//     status: "pending",
-//   },
-// ];
+import { getAllOrders, updateOrder } from "../../api/orderApi";
+import {
+  getAverageOrderValue,
+  getCancelledOrders,
+  getCompletedOrders,
+  getNewOrders,
+  getTotalSales,
+} from "../../utils/helpers";
+import { toast } from "react-toastify";
 
 const DashBoard: React.FC = () => {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
-  console.log(
-    "accessTokenaccessTokenaccessTokenaccessTokenaccessToken",
-    accessToken
+  const restaurantId: string = useSelector(
+    (state: any) => state?.auth?.restaurant?.restaurantId
   );
 
   const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(
@@ -32,10 +30,14 @@ const DashBoard: React.FC = () => {
   );
   const dispatch = useDispatch();
   const [orderData, setOrderData] = React.useState<Order[] | undefined>([]);
+  const [refetchOrders, setrefetchOrders] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await restaurantsGetAllUserRestaurant(user);
 
@@ -45,13 +47,27 @@ const DashBoard: React.FC = () => {
         );
         setOrderData(fetchData);
         dispatch(setRestaurant(response[0]));
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching restaurant data 🤷🏻:", error);
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [refetchOrders]);
+
+  const handleStatusChange = async (newStatus: StatusType, orderId: string) => {
+    try {
+      await updateOrder(accessToken, restaurantId, orderId, newStatus);
+      setrefetchOrders(!refetchOrders);
+      toast.success("Order status updated successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to update order status");
+    }
+  };
+
   return (
     <Box sx={{ marginX: "15px" }}>
       <Box
@@ -64,22 +80,22 @@ const DashBoard: React.FC = () => {
         }}
       >
         <SellingOrderCard
-          orderCount={10}
+          orderCount={getCompletedOrders(orderData ?? [])}
           backgroundImage={orderTrunk}
           OrderText="Selling Orders"
           sx={{ backgroundColor: "#468A6C" }}
         />
         <SellingOrderCard
-          orderCount={12}
+          orderCount={getCancelledOrders(orderData ?? [])}
           backgroundImage={orderList}
-          OrderText="Product Sells"
-          sx={{ backgroundColor: "#194D7C" }}
+          OrderText="Cancelled Orders"
+          sx={{ backgroundColor: "#B12A20" }}
         />
         <SellingOrderCard
-          orderCount={14}
+          orderCount={getNewOrders(orderData ?? [])}
           backgroundImage={orderFill}
           OrderText="New Orders"
-          sx={{ backgroundColor: "#B12A20" }}
+          sx={{ backgroundColor: "#194D7C" }}
         />
       </Box>
       <Box
@@ -103,22 +119,23 @@ const DashBoard: React.FC = () => {
         >
           <OrderDetailCard
             value="Total Sales"
-            averageOrderValue={86784.93}
+            averageOrderValue={getTotalSales(orderData ?? []) ?? 0}
             percentage={12.5}
             fromDate="Jan"
           />
           <OrderDetailCard
             value="Avg. Order Value"
-            averageOrderValue={234.14}
+            averageOrderValue={getAverageOrderValue(orderData ?? []) ?? 0}
             percentage={12.5}
             fromDate="Jan"
           />
-          <OrderDetailCard
+          {/* TODO: Add Conversion Rate */}
+          {/* <OrderDetailCard
             value="Conversion Rate"
-            averageOrderValue={82.94}
-            percentage={0.32}
+            averageOrderValue={getOrderConversionRate(orderData ?? []).sales}
+            percentage={getOrderConversionRate(orderData ?? []).conversionRate}
             fromDate="Jan"
-          />
+          /> */}
         </Box>
         <Box
           sx={{
@@ -140,7 +157,11 @@ const DashBoard: React.FC = () => {
           >
             Orders
           </Typography>
-          <DetailTable rows={orderData} />
+          <DetailTable
+            rows={orderData}
+            loading={loading}
+            handleStatusChange={handleStatusChange}
+          />
         </Box>
       </Box>
     </Box>

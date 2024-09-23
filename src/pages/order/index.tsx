@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
+
 import {
   Typography,
   Modal,
@@ -9,54 +10,85 @@ import {
   FormControl,
   Select,
   MenuItem,
-  SelectChangeEvent,
 } from "@mui/material";
-import OrderTable from "./component/orderTable";
-import { modifier } from "../../utils";
+import Table from "@mui/material/Table";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
 
-const data = [
-  {
-    thumbnail: modifier,
-    name: "Drink",
-    itemPrice: "Rs.12",
-    quantity: 2,
-    modifier: "Extra Cheese",
-    price: "Rs.18",
-  },
-];
+import OrderTable from "./component/orderTable";
+
+import { DiscountTypes, Modifier, Order, StatusType } from "../../type";
+import {
+  OrderTypeMap,
+  PaymentTypeMap,
+  statusOptions,
+} from "../../utils/constants";
+
+interface OrderItems {
+  thumbnail: string;
+  name: string;
+  itemPrice: string;
+  quantity: number;
+  modifier: string;
+  price: string;
+}
 
 interface OrderDetailModalProps {
   open: boolean;
   onClose: () => void;
-  customerDetails: {
-    name: string;
-    phoneNumber: string;
-    address: string;
-  };
-  orderDetails: {
-    id: string;
-    date: string;
-    paymentMethod: string;
-    status: string;
-    instructions?: string;
-  };
+  orderDetails: Order | null;
+  orderId: string;
+  handleStatusChange: (status: StatusType, orderId: string) => void;
 }
 
 const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   open,
   onClose,
-  customerDetails,
   orderDetails,
+  orderId,
+  handleStatusChange,
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<StatusType | "">("");
+  const [orderItems, setOrderItems] = useState<OrderItems[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    setSelectedValue(event.target.value as string);
+  useEffect(() => {
+    if (orderDetails && orderDetails?.orderStatus) {
+      setSelectedValue(orderDetails?.orderStatus ?? "");
+    }
+    if (orderDetails && orderDetails.carts.length) {
+      const items: OrderItems[] = orderDetails.carts.map((cart: any) => {
+        let modifiersPrice: number = 0;
+        cart.selectedModifiers &&
+          cart.selectedModifiers.forEach((modifier: any) => {
+            if (modifier?.priceChange) {
+              modifiersPrice += modifier?.priceChange;
+            }
+          });
+        return {
+          name: cart.item.name,
+          thumbnail: cart.item.imageUrl,
+          itemPrice: cart.item.price,
+          quantity: cart.quantity,
+          modifier: cart.selectedModifiers.length
+            ? cart.selectedModifiers
+              .map((mod: Modifier) => mod.name + `  (${mod?.priceChange})`)
+              .join("\n")
+            : "No Modifier",
+          price: String((cart.item.price + modifiersPrice) * cart?.quantity),
+        };
+      });
+      setOrderItems(items);
+    }
+  }, []);
+
+  const tableCellStyle = {
+    border: "none",
+    fontSize: { xs: "13px", md: "16px" },
+    fontWeight: "400",
   };
-
 
   return (
     <Modal
@@ -70,116 +102,204 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           position: "absolute",
           top: "50%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: isMobile ? "400px" : "auto",
-          height: isMobile ? "700px" : "auto",
+          transform: "translate(-50% , -50%)",
+          maxHeight: "90vh",
+          minHeight: "80vh",
+          height: "100%",
+          maxWidth: "80%",
+          minWidth: "70%",
+          width: "70%",
           bgcolor: "background.paper",
+          borderRadius: "8px",
           boxShadow: 24,
           p: isMobile ? 1 : 4,
+          padding: {
+            xs: "50px 25px 10px 25px",
+            md: "",
+            sm: "5px 60px 50px 60px",
+          },
         }}
       >
         <Typography
           variant="h6"
           component="h1"
-          sx={{ textAlign: "center", fontSize: "30px" }}
+          sx={{
+            textAlign: "center",
+            fontSize: "40px",
+            fontWeight: "600",
+            display: { xs: "none", sm: "block" },
+          }}
         >
-          Order Detail
+          Orders
         </Typography>
         <Box
           sx={{
             display: "flex",
             flexDirection: "row",
+            gap: "8px",
             justifyContent: "space-between",
           }}
         >
           <Box>
             <Typography
               variant="subtitle1"
-              sx={{ fontWeight: "600", fontSize: "18px" }}
+              sx={{ fontWeight: "700", fontSize: { xs: "13px", md: "16px" } }}
             >
               Customer Details
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Name: {customerDetails.name}
+            {/* Todo: Add customer name */}
+            {/* <Typography variant="body2" sx={{ fontSize: { xs: "13px", md: "16px" } }}>
+              Name:
+            </Typography> */}
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              Phone Number: {orderDetails?.customerPhoneNumber}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Phone: {customerDetails.phoneNumber}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Address: {customerDetails.address}
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              {orderDetails?.pickupTime ? "Pickup Time" : "Address"}:{" "}
+              {orderDetails?.pickupTime || orderDetails?.completeAddress}
             </Typography>
           </Box>
 
-          <Box>
+          <Box sx={{ minWidth: "213px" }}>
             <Typography
               variant="subtitle1"
-              sx={{ fontWeight: "600", fontSize: "18px" }}
+              sx={{ fontWeight: "700", fontSize: { xs: "13px", md: "16px" } }}
             >
               Order Details
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              ID: {orderDetails.id}
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              ID: #{orderId}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Date: {orderDetails.date}
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              Type:{" "}
+              {orderDetails?.orderType && OrderTypeMap[orderDetails.orderType]}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: "18px" }}>
-              Payment Method: {orderDetails.paymentMethod}
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              Date:{" "}
+              {new Date(orderDetails?.createdAt ?? "").toLocaleDateString()}
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Typography variant="body2" sx={{ fontSize: '18px' }}>Status:</Typography>
-              <FormControl sx={{ marginLeft: '5px' }}>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: { xs: "13px", md: "16px" } }}
+            >
+              Payment Method:{" "}
+              {orderDetails?.paymentType &&
+                PaymentTypeMap[orderDetails?.paymentType]}
+            </Typography>
+            {orderDetails && (
+              <Typography
+                variant="body2"
+                sx={{ fontSize: { xs: "13px", md: "16px" } }}
+              >
+                Instructions: {orderDetails?.instructions}
+              </Typography>
+            )}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "baseline",
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ fontSize: { xs: "13px", md: "16px" } }}
+              >
+                Status:
+              </Typography>
+              <FormControl
+                variant="standard"
+                sx={{ marginLeft: "5px", minWidth: 120 }}
+              >
                 <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
                   value={selectedValue}
-                  label="Select Option"
-                  onChange={handleChange}
-                  sx={{
-                    height: '30px',
-                    width: '150px',
-                    '.MuiSelect-select': {
-                      paddingTop: '8px',
-                      paddingBottom: '8px',
-                    },
+                  onChange={(e) => {
+                    const newStatus = e.target.value as StatusType;
+                    setSelectedValue(newStatus);
+                    handleStatusChange(newStatus, orderDetails?.orderId ?? "");
                   }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        maxHeight: '200px',
-                      },
-                    },
-                  }}
+                  label="Age"
+                  sx={{ border: "none", fontSize: { xs: "13px", md: "16px" } }}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="option1">Pending</MenuItem>
+                  {statusOptions.map((option: StatusType) => (
+                    <MenuItem
+                      sx={{ fontSize: { xs: "13px", md: "16px" } }}
+                      key={option}
+                      value={option}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
-            {orderDetails.instructions && (
-              <Typography variant="body2" sx={{ fontSize: "18px" }}>
-                Instructions: {orderDetails.instructions}
-              </Typography>
-            )}
           </Box>
         </Box>
         <Box sx={{ mt: 4 }}>
-          <OrderTable rows={data} />
+          <OrderTable rows={orderItems} />
         </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Amount: 200
-          </Typography>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Discount: 10%
-          </Typography>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            VAT: 5%
-          </Typography>
-          <Typography variant="body2" sx={{ fontSize: "18px" }}>
-            Total Price: RS.230
-          </Typography>
-        </Box>
+
+        <Table
+          sx={{ width: "auto", float: "right", mt: 2, marginRight: "16px" }}
+        >
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>
+              Amount:
+            </TableCell>
+            <TableCell
+              sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
+            >
+              {orderDetails?.amountWithoutDiscount}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>
+              Discount:
+            </TableCell>
+            <TableCell
+              sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
+            >
+              {orderDetails?.discount?.discountType ===
+                DiscountTypes.FIXED_AMOUNT && "AED."}
+              {orderDetails?.discount?.discountValue}
+              {orderDetails?.discount?.discountType ===
+                DiscountTypes.PERCENTAGE && " %"}
+            </TableCell>
+          </TableRow>
+
+          {/* { TODO: Add VAT } */}
+          {/* <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>VAT:</TableCell>
+            <TableCell sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}>5%</TableCell>
+          </TableRow> */}
+          <TableRow>
+            <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>
+              Total Price:
+            </TableCell>
+            <TableCell
+              sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
+            >
+              AED.{orderDetails?.amountWithDiscount}
+            </TableCell>
+          </TableRow>
+        </Table>
       </Paper>
     </Modal>
   );

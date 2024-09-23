@@ -296,7 +296,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <TableCell
               sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
             >
-              ADE.{orderDetails?.amountWithDiscount}
+              AED.{orderDetails?.amountWithDiscount}
             </TableCell>
           </TableRow>
         </Table>

@@ -90,18 +90,11 @@ function ThemeComponent() {
   }, [initialData]);
 
   const validateForm = () => {
-    if (
-      formData.name &&
-      formData.primaryColor &&
-      formData.secondaryColor &&
-      formData.primaryFont &&
-      formData.secondaryFont &&
-      formData.backgroundColor
-    ) {
+    if (formData.name) {
       return true;
     }
 
-    toast.error("Please fill all the required fields");
+    toast.error("Please enter name of the Theme");
     return false;
   };
 

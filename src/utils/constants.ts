@@ -26,3 +26,8 @@ export const PaymentTypeMap = {
   OTHER: "Other",
   CASH_ON_DELIVERY: "Cash on Delivery",
 };
+
+export const DiscountTypeMap = {
+  FIXED_AMOUNT: "FIXED AMOUNT",
+  PERCENTAGE: "PERCENTAGE",
+};

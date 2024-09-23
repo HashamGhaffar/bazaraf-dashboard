@@ -17,8 +17,12 @@ import TableCell from "@mui/material/TableCell";
 
 import OrderTable from "./component/orderTable";
 
-import { Order, StatusType } from "../../type";
-import { OrderTypeMap, PaymentTypeMap, statusOptions } from "../../utils/constants";
+import { DiscountTypes, Order, StatusType } from "../../type";
+import {
+  OrderTypeMap,
+  PaymentTypeMap,
+  statusOptions,
+} from "../../utils/constants";
 
 interface OrderItems {
   thumbnail: string;
@@ -177,7 +181,8 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               variant="body2"
               sx={{ fontSize: { xs: "13px", md: "16px" } }}
             >
-              Order Type: {orderDetails?.orderType && OrderTypeMap[orderDetails.orderType]}
+              Order Type:{" "}
+              {orderDetails?.orderType && OrderTypeMap[orderDetails.orderType]}
             </Typography>
             <Typography
               variant="body2"
@@ -232,7 +237,11 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   sx={{ border: "none", fontSize: { xs: "13px", md: "16px" } }}
                 >
                   {statusOptions.map((option: StatusType) => (
-                    <MenuItem sx={{ fontSize: { xs: "13px", md: "16px" } }} key={option} value={option}>
+                    <MenuItem
+                      sx={{ fontSize: { xs: "13px", md: "16px" } }}
+                      key={option}
+                      value={option}
+                    >
                       {option}
                     </MenuItem>
                   ))}
@@ -245,7 +254,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           <OrderTable rows={orderItems} />
         </Box>
 
-        <Table sx={{ width: "auto", float: "right", mt: 2, marginRight: "21px" }}>
+        <Table
+          sx={{ width: "auto", float: "right", mt: 2, marginRight: "21px" }}
+        >
           <TableRow>
             <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>
               Amount:
@@ -263,7 +274,11 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <TableCell
               sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
             >
-              0%
+              {orderDetails?.discount.discountType ===
+                DiscountTypes.FIXED_AMOUNT && "AED."}
+              {orderDetails?.discount.discountValue}
+              {orderDetails?.discount.discountType ===
+                DiscountTypes.PERCENTAGE && " %"}
             </TableCell>
           </TableRow>
 

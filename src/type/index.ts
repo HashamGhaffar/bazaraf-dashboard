@@ -91,6 +91,12 @@ export interface Cart {
   updatedAt: number;
 }
 
+export interface OrderDiscount {
+  discountId: string;
+  discountType: DiscountTypes;
+  discountValue: number;
+}
+
 export interface Order {
   orderId: string;
   customerId: string;
@@ -99,7 +105,7 @@ export interface Order {
   instructions: string | null;
   amountWithoutDiscount: number;
   amountWithDiscount: number;
-  discountId: string | null;
+  discount: OrderDiscount;
   pickupTime: string;
   carts: Cart[];
   orderStatus: StatusType;
@@ -109,6 +115,11 @@ export interface Order {
   updatedAt: number;
   deliveryLocationId: string;
   restaurantId: string;
+}
+
+export enum DiscountTypes {
+  FIXED_AMOUNT = "FIXED_AMOUNT",
+  PERCENTAGE = "PERCENTAGE",
 }
 
 export enum PaymentType {

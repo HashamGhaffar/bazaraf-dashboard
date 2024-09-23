@@ -15,7 +15,6 @@ import {
   getCancelledOrders,
   getCompletedOrders,
   getNewOrders,
-  getOrderConversionRate,
   getTotalSales,
 } from "../../utils/helpers";
 import { toast } from "react-toastify";
@@ -23,7 +22,7 @@ import { toast } from "react-toastify";
 const DashBoard: React.FC = () => {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
   const restaurantId: string = useSelector(
-    (state: any) => state.auth.restaurant.restaurantId
+    (state: any) => state?.auth?.restaurant?.restaurantId
   );
 
   const { restaurantsGetAllUserRestaurant } = useRestaurantsApi(

@@ -38,32 +38,56 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
           <TableHead>
             <TableRow sx={{ backgroundColor: "primary.main" }}>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 Image
               </TableCell>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 Name
               </TableCell>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 Item Price
               </TableCell>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 QTY
               </TableCell>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 Modifiers
               </TableCell>
               <TableCell
-                sx={{ color: "white", fontSize: { xs: "13px", md: "16px" }, fontWeight: "400" }}
+                sx={{
+                  color: "white",
+                  fontSize: { xs: "13px", md: "16px" },
+                  fontWeight: "400",
+                }}
               >
                 Price
               </TableCell>
@@ -79,21 +103,48 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
                     style={{ width: "50px", height: "50px" }}
                   />
                 </TableCell>
-                <TableCell sx={{
-                  width: "12%", fontSize: { xs: "13px", md: "16px" }
-                }}>{row.name}</TableCell>
-                <TableCell sx={{
-                  width: "17%", fontSize: { xs: "13px", md: "16px" }, minWidth: { xs: "93px", md: "17%" }
-                }}>{row.itemPrice}</TableCell>
-                <TableCell sx={{
-                  width: "9%", fontSize: { xs: "13px", md: "16px" }
-                }}>{row.quantity}</TableCell>
-                <TableCell sx={{
-                  Width: "30%", fontSize: { xs: "13px", md: "16px" }, minWidth: { xs: "150px", sm: "30%" }
-                }}>{row.modifier}</TableCell>
-                <TableCell sx={{
-                  width: "8%", fontSize: { xs: "13px", md: "16px" }
-                }}>{row.price}</TableCell>
+                <TableCell
+                  sx={{
+                    width: "12%",
+                    fontSize: { xs: "13px", md: "16px" },
+                  }}
+                >
+                  {row.name}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    width: "17%",
+                    fontSize: { xs: "13px", md: "16px" },
+                    minWidth: { xs: "93px", md: "17%" },
+                  }}
+                >
+                  {row.itemPrice}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    width: "9%",
+                    fontSize: { xs: "13px", md: "16px" },
+                  }}
+                >
+                  {row.quantity}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    Width: "30%",
+                    fontSize: { xs: "13px", md: "16px" },
+                    minWidth: { xs: "150px", sm: "30%" },
+                  }}
+                >
+                  {row.modifier}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    width: "8%",
+                    fontSize: { xs: "13px", md: "16px" },
+                  }}
+                >
+                  {row.price}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

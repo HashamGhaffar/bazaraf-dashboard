@@ -6,6 +6,8 @@ import {
   Grid,
   useMediaQuery,
   useTheme,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import SloganIcon from "@mui/icons-material/EmojiObjects";
@@ -27,6 +29,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { photoUpload } from "../../api/ThemeApi";
+import { currencies } from '../../utils/currencies';
 const Profile: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -66,6 +69,7 @@ const Profile: React.FC = () => {
     imageUrl: "",
     brandImageUrl: "",
     brandColor: "",
+    currency: ""
   });
 
   const { restaurant, accessToken, user } = useSelector(
@@ -101,6 +105,7 @@ const Profile: React.FC = () => {
         imageUrl: response.imageUrl,
         brandImageUrl: response.brandImageUrl,
         brandColor: response.brandColor,
+        currency: ""
       });
     }
   };
@@ -299,6 +304,49 @@ const Profile: React.FC = () => {
             onChange={(e) => handleChange(e, "address")}
             value={formData.address.address}
           />
+
+          <Box sx={{ marginTop: "10px" }}>
+            <Autocomplete
+              disablePortal
+              options={currencies}
+              sx={{ width: "100%", maxWidth: "470px", margin: "auto" }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Currency"
+                  sx={{
+                    borderRadius: "10px",  // Set the border radius
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",  // Ensure the input box has rounded borders
+                      borderColor: "grey.400",  // Set the border color
+                      "& fieldset": {
+                        borderColor: "grey.400",  // Ensure the border color applies correctly
+                        borderWidth: "1px",  // Set the default border width
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "grey.400",  // Keep the border color consistent on hover
+                        borderWidth: "1px",  // Ensure the border width remains 1px on hover
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "grey.400",  // Keep the border color consistent on focus
+                        borderWidth: "1px",  // Prevent the border width from increasing on focus
+                      },
+                      "&:focus": {
+                        outline: "none",  // Remove the outline on focus
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "grey.500",  // Set the label color
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "grey.500",  // Prevent the label color from changing on focus
+                    },
+                  }}
+                />
+              )}
+            />
+          </Box>
+
           <Box
             sx={{
               display: "flex",
@@ -313,7 +361,7 @@ const Profile: React.FC = () => {
               Icon={UpdateIcon}
               onChange={(e) => handleChange(e, "openingHours")}
               value={formatTime(formData.openingHours)}
-              sx={{mr: 5}}
+              sx={{ mr: 5 }}
             />
             <InputField
               label="Delivery Time"
@@ -321,6 +369,7 @@ const Profile: React.FC = () => {
               onChange={(e) => handleChange(e, "deliveryTime")}
               value={formData.deliveryTime}
             />
+
           </Box>
           <Box
             sx={{
@@ -390,6 +439,8 @@ const Profile: React.FC = () => {
               </Grid>
             </Grid>
           </Box>
+
+
         </Box>
         <Box
           sx={{

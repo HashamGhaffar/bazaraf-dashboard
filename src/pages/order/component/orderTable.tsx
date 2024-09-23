@@ -29,7 +29,7 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ overflowX: "auto", overflowY: "auto", maxHeight: "200px" }}>
+    <Box sx={{ overflowX: "auto", overflowY: "auto", maxHeight: "400px" }}>
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: isMobile ? "350px" : "650px" }}

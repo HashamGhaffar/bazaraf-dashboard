@@ -225,15 +225,23 @@ function ThemeComponent() {
                 gap: 1,
               }}
             >
-              <DropdownComponent
-                title="Primary color"
-                onChange={handleDropdownChange("primaryColor")}
+              <CustomInputField
+                type='color'
+                Icon={ColorLensIcon}
                 value={formData.primaryColor}
+                label="Primary Color"
+                onChange={(e) => {
+                  setFormData({ ...formData, primaryColor: e });
+                }}
               />
-              <DropdownComponent
-                title="Secondary color"
-                onChange={handleDropdownChange("secondaryColor")}
+              <CustomInputField
+                type='color'
+                Icon={ColorLensIcon}
                 value={formData.secondaryColor}
+                label="Secondary Color"
+                onChange={(e) => {
+                  setFormData({ ...formData, secondaryColor: e });
+                }}
               />
             </Box>
             <Box

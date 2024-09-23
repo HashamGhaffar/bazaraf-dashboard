@@ -133,6 +133,7 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
                     Width: "30%",
                     fontSize: { xs: "13px", md: "16px" },
                     minWidth: { xs: "150px", sm: "30%" },
+                    whiteSpace: "pre-line",
                   }}
                 >
                   {row.modifier}

@@ -17,7 +17,7 @@ import TableCell from "@mui/material/TableCell";
 
 import OrderTable from "./component/orderTable";
 
-import { DiscountTypes, Order, StatusType } from "../../type";
+import { DiscountTypes, Modifier, Order, StatusType } from "../../type";
 import {
   OrderTypeMap,
   PaymentTypeMap,
@@ -73,9 +73,11 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           itemPrice: cart.item.price,
           quantity: cart.quantity,
           modifier: cart.selectedModifiers.length
-            ? cart.selectedModifiers.map((mod: any) => mod.name).join(", ")
+            ? cart.selectedModifiers
+                .map((mod: Modifier) => mod.name + `  (${mod?.priceChange})`)
+                .join("\n")
             : "No Modifier",
-          price: String((cart.item.price + modifiersPrice) * cart.quantity),
+          price: String((cart.item.price + modifiersPrice) * cart?.quantity),
         };
       });
       setOrderItems(items);

@@ -37,8 +37,8 @@ function ThemeComponent() {
   const themeId = editingTheme?.themeId;
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    primaryColor: initialData?.primaryColor || "",
-    secondaryColor: initialData?.secondaryColor || "",
+    primaryColor: initialData?.primaryColor || "#e2e6ea",
+    secondaryColor: initialData?.secondaryColor || "#707375",
     textColor: initialData?.textColor || "",
     linkColor: initialData?.linkColor || "",
     primaryFont: initialData?.primaryFont || "",

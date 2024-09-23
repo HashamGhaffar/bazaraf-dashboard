@@ -276,10 +276,10 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <TableCell
               sx={{ padding: 0, ...tableCellStyle, textAlign: "right" }}
             >
-              {orderDetails?.discount.discountType ===
+              {orderDetails?.discount?.discountType ===
                 DiscountTypes.FIXED_AMOUNT && "AED."}
-              {orderDetails?.discount.discountValue}
-              {orderDetails?.discount.discountType ===
+              {orderDetails?.discount?.discountValue}
+              {orderDetails?.discount?.discountType ===
                 DiscountTypes.PERCENTAGE && " %"}
             </TableCell>
           </TableRow>

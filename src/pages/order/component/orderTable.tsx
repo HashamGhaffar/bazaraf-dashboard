@@ -29,10 +29,10 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <Box sx={{ overflowX: "auto", overflowY: "auto", maxHeight: "400px" }}>
-      <TableContainer component={Paper}>
+    <Box sx={{ overflowX: "auto", overflowY: "auto", minHeight: "30vh", maxHeight: "40vh", height: "35vh" }}>
+      <TableContainer sx={{ overflowX: "auto", overflowY: "auto" }} component={Paper}>
         <Table
-          sx={{ minWidth: isMobile ? "350px" : "650px" }}
+          sx={{ minWidth: isMobile ? "350px" : "400px" }}
           aria-label="simple table"
         >
           <TableHead>
@@ -87,6 +87,7 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
                   color: "white",
                   fontSize: { xs: "13px", md: "16px" },
                   fontWeight: "400",
+                  textAlign: "right"
                 }}
               >
                 Price
@@ -105,7 +106,9 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
                 </TableCell>
                 <TableCell
                   sx={{
-                    width: "12%",
+                    minWidth: "12%",
+                    maxWidth: "20%",
+                    width: "100%",
                     fontSize: { xs: "13px", md: "16px" },
                   }}
                 >
@@ -142,6 +145,7 @@ const OrderTable: React.FC<ListComponentProps> = ({ rows }) => {
                   sx={{
                     width: "8%",
                     fontSize: { xs: "13px", md: "16px" },
+                    textAlign: "right"
                   }}
                 >
                   {row.price}

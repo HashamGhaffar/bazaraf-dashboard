@@ -74,8 +74,8 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           quantity: cart.quantity,
           modifier: cart.selectedModifiers.length
             ? cart.selectedModifiers
-                .map((mod: Modifier) => mod.name + `  (${mod?.priceChange})`)
-                .join("\n")
+              .map((mod: Modifier) => mod.name + `  (${mod?.priceChange})`)
+              .join("\n")
             : "No Modifier",
           price: String((cart.item.price + modifiersPrice) * cart?.quantity),
         };
@@ -177,13 +177,13 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               variant="body2"
               sx={{ fontSize: { xs: "13px", md: "16px" } }}
             >
-              Order ID: #{orderId}
+              ID: #{orderId}
             </Typography>
             <Typography
               variant="body2"
               sx={{ fontSize: { xs: "13px", md: "16px" } }}
             >
-              Order Type:{" "}
+              Type:{" "}
               {orderDetails?.orderType && OrderTypeMap[orderDetails.orderType]}
             </Typography>
             <Typography
@@ -257,7 +257,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
         </Box>
 
         <Table
-          sx={{ width: "auto", float: "right", mt: 2, marginRight: "21px" }}
+          sx={{ width: "auto", float: "right", mt: 2, marginRight: "16px" }}
         >
           <TableRow>
             <TableCell sx={{ padding: "0 14px 0 0", ...tableCellStyle }}>

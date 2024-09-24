@@ -47,8 +47,8 @@ const Theme: React.FC = () => {
                     justifyContent: 'center',
                     height: '100%',
                     "@media (max-width: 500px)": {
-                  display: 'block'
-                },
+                        display: 'block'
+                    },
                 }}
             >
                 <ThemeComponent />

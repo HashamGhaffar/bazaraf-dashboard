@@ -36,7 +36,6 @@ const ThemeTable: React.FC<ListComponentProps> = ({
   deleteHandel,
   editHandel,
 }) => {
-  console.log(rows);
   return (
     <Box sx={{ overflowX: "auto" }}>
       <TableContainer component={Paper}>
@@ -72,7 +71,6 @@ const ThemeTable: React.FC<ListComponentProps> = ({
           </TableHead>
           <TableBody>
             {rows.map((row: any, index: number) => {
-              console.log(row);
               return (
                 <TableRow key={index} sx={{ borderBottom: "1px solid grey" }}>
                   <TableCell>{index + 1}</TableCell>

@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import SelectImage from "../../../components/selectImage";
+import { fonts } from '../../../utils/fonts';
+import { defaultPrimaryColor, defaultSecondaryColor, ThemeLayout } from '../constant';
 
 function ThemeComponent() {
   const theme = useTheme();
@@ -37,8 +39,8 @@ function ThemeComponent() {
   const themeId = editingTheme?.themeId;
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    primaryColor: initialData?.primaryColor || "",
-    secondaryColor: initialData?.secondaryColor || "",
+    primaryColor: initialData?.primaryColor || defaultPrimaryColor,
+    secondaryColor: initialData?.secondaryColor || defaultSecondaryColor,
     textColor: initialData?.textColor || "",
     linkColor: initialData?.linkColor || "",
     primaryFont: initialData?.primaryFont || "",
@@ -90,18 +92,11 @@ function ThemeComponent() {
   }, [initialData]);
 
   const validateForm = () => {
-    if (
-      formData.name &&
-      formData.primaryColor &&
-      formData.secondaryColor &&
-      formData.primaryFont &&
-      formData.secondaryFont &&
-      formData.backgroundColor
-    ) {
+    if (formData.name) {
       return true;
     }
 
-    toast.error("Please fill all the required fields");
+    toast.error("Please enter name of the Theme");
     return false;
   };
 
@@ -114,16 +109,16 @@ function ThemeComponent() {
 
     const response = themeId
       ? await updateTheme(
-          accessToken,
-          restaurant.restaurantId,
-          themeId,
-          formData as any
-        )
+        accessToken,
+        restaurant.restaurantId,
+        themeId,
+        formData as any
+      )
       : await createTheme(
-          accessToken,
-          restaurant.restaurantId,
-          formData as any
-        );
+        accessToken,
+        restaurant.restaurantId,
+        formData as any
+      );
     setThemeData(response, editingTheme ? "UPDATE" : "ADD");
     setFormData({
       name: "",
@@ -162,6 +157,7 @@ function ThemeComponent() {
       }
     }
   };
+
 
   return (
     <>
@@ -208,11 +204,13 @@ function ThemeComponent() {
                 value={formData.primaryFont}
                 title="Primary font"
                 onChange={handleDropdownChange("primaryFont")}
+                data={fonts}
               />
               <DropdownComponent
                 title="Secondary font"
                 value={formData.secondaryFont}
                 onChange={handleDropdownChange("secondaryFont")}
+                data={fonts}
               />
             </Box>
             <Box
@@ -225,15 +223,23 @@ function ThemeComponent() {
                 gap: 1,
               }}
             >
-              <DropdownComponent
-                title="Primary color"
-                onChange={handleDropdownChange("primaryColor")}
+              <CustomInputField
+                type='color'
+                Icon={ColorLensIcon}
                 value={formData.primaryColor}
+                label="Primary Color"
+                onChange={(e) => {
+                  setFormData({ ...formData, primaryColor: e });
+                }}
               />
-              <DropdownComponent
-                title="Secondary color"
-                onChange={handleDropdownChange("secondaryColor")}
+              <CustomInputField
+                type='color'
+                Icon={ColorLensIcon}
                 value={formData.secondaryColor}
+                label="Secondary Color"
+                onChange={(e) => {
+                  setFormData({ ...formData, secondaryColor: e });
+                }}
               />
             </Box>
             <Box
@@ -246,6 +252,7 @@ function ThemeComponent() {
               }}
             >
               <CustomInputField
+                type='color'
                 Icon={ColorLensIcon}
                 value={formData.backgroundColor}
                 label="Background Color"
@@ -263,7 +270,7 @@ function ThemeComponent() {
                   Icon={ImageIcon}
                   value={formData.backgroundImageUrl}
                   label="Background Image"
-                  onChange={() => {}}
+                  onChange={() => { }}
                 />
               </div>
               <input
@@ -344,16 +351,16 @@ function ThemeComponent() {
                 }}
               >
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Grid View"} required={true} />
+                  <CustomCheckbox label={ThemeLayout.GRID_VIEW} required={false} />
                 </Grid>
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Text View"} required={true} />
+                  <CustomCheckbox label={ThemeLayout.TEXT_VIEW} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Category View"} required={true} />
+                  <CustomCheckbox label={ThemeLayout.CATEGORY_VIEW} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"List View"} required={true} />
+                  <CustomCheckbox label={ThemeLayout.LIST_VIEW} required={false} />
                 </Grid>
               </Grid>
             </Box>
@@ -399,7 +406,7 @@ function ThemeComponent() {
             h3="Active"
             h4="Default"
             h5={"Edit/Delete"}
-            // h6={""}
+          // h6={""}
           />
         </Box>
       </Box>

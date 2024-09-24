@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import SelectImage from "../../../components/selectImage";
 import { fonts } from '../../../utils/fonts';
+import { defaultPrimaryColor, defaultSecondaryColor, ThemeLayout } from '../constant';
 
 function ThemeComponent() {
   const theme = useTheme();
@@ -38,8 +39,8 @@ function ThemeComponent() {
   const themeId = editingTheme?.themeId;
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
-    primaryColor: initialData?.primaryColor || "#e2e6ea",
-    secondaryColor: initialData?.secondaryColor || "#707375",
+    primaryColor: initialData?.primaryColor || defaultPrimaryColor,
+    secondaryColor: initialData?.secondaryColor || defaultSecondaryColor,
     textColor: initialData?.textColor || "",
     linkColor: initialData?.linkColor || "",
     primaryFont: initialData?.primaryFont || "",
@@ -350,16 +351,16 @@ function ThemeComponent() {
                 }}
               >
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Grid View"} required={false} />
+                  <CustomCheckbox label={ThemeLayout.GRID_VIEW} required={false} />
                 </Grid>
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Text View"} required={false} />
+                  <CustomCheckbox label={ThemeLayout.TEXT_VIEW} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Category View"} required={false} />
+                  <CustomCheckbox label={ThemeLayout.CATEGORY_VIEW} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"List View"} required={false} />
+                  <CustomCheckbox label={ThemeLayout.LIST_VIEW} required={false} />
                 </Grid>
               </Grid>
             </Box>

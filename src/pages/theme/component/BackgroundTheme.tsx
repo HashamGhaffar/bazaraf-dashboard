@@ -350,16 +350,16 @@ function ThemeComponent() {
                 }}
               >
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Grid View"} required={true} />
+                  <CustomCheckbox label={"Grid View"} required={false} />
                 </Grid>
                 <Grid item xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Text View"} required={true} />
+                  <CustomCheckbox label={"Text View"} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"Category View"} required={true} />
+                  <CustomCheckbox label={"Category View"} required={false} />
                 </Grid>
                 <Grid xs={isMobile ? 5 : 12} sm={isMobile ? 2 : 6}>
-                  <CustomCheckbox label={"List View"} required={true} />
+                  <CustomCheckbox label={"List View"} required={false} />
                 </Grid>
               </Grid>
             </Box>

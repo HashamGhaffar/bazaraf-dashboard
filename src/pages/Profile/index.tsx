@@ -309,6 +309,12 @@ const Profile: React.FC = () => {
             <Autocomplete
               disablePortal
               options={currencies}
+              onChange={(_event, currency) => {
+                setFormData((prevFormData) => ({
+                  ...prevFormData,
+                  currency: currency?.cc ?? ''
+                }))
+              }}
               sx={{ width: "100%", maxWidth: "470px", margin: "auto" }}
               renderInput={(params) => (
                 <TextField

@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import SelectImage from "../../../components/selectImage";
+import { fonts } from '../../../utils/fonts';
 
 function ThemeComponent() {
   const theme = useTheme();
@@ -156,6 +157,7 @@ function ThemeComponent() {
     }
   };
 
+
   return (
     <>
       <Box sx={{ marginX: "15px", backgroundColor: "white" }}>
@@ -201,11 +203,13 @@ function ThemeComponent() {
                 value={formData.primaryFont}
                 title="Primary font"
                 onChange={handleDropdownChange("primaryFont")}
+                data={fonts}
               />
               <DropdownComponent
                 title="Secondary font"
                 value={formData.secondaryFont}
                 onChange={handleDropdownChange("secondaryFont")}
+                data={fonts}
               />
             </Box>
             <Box

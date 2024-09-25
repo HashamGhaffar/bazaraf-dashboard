@@ -66,7 +66,7 @@ const InputField: React.FC<InputFieldProps> = ({
             borderStyle: "solid",
           }}
         >
-          <IconButton sx={{ p: "10px" }}>
+          <IconButton disabled sx={{ p: "10px" }}>
             {Icon && <Icon sx={{ color: iconColor }} />}
           </IconButton>
           <InputBase

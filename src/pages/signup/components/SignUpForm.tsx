@@ -3,7 +3,7 @@ import InputField from "../../../components/inputField";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
-import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
+// import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
 import SimpleButton from "../../../components/simpleButton";
 import { useState } from "react";
 import { ChangeEvent } from "react";
@@ -11,12 +11,15 @@ import { useNavigate } from "react-router-dom";
 import DropdownComponent from "../../../components/dropDown";
 import { toast } from "react-toastify";
 import { authSignUp } from "../../../api/AuthApi";
+import { SellerType } from "../../../type";
+
+const sellerTypes: SellerType[] = [SellerType.BUSINESS, SellerType.INDIVIDUAL];
 
 function SignUpForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    userName: "",
-    email: "",
+    fullName: "",
+    username: "",
     password: "",
     confirmPassword: "",
     sellerType: "",
@@ -28,12 +31,15 @@ function SignUpForm() {
 
     try {
       // API call for sign up authSignUp
-      const response = await authSignUp({
-        username: formData.userName,
+      await authSignUp({
+        fullName: formData.fullName,
+        username: formData.username,
         password: formData.password,
-        email: formData.email,
+        confirmPassword: formData.confirmPassword,
+        sellerType: formData.sellerType as SellerType,
       });
-      console.log(formData, response, "handleDropdownChange");
+      //
+      navigate("/login");
     } catch (error) {
       console.error(error, "error");
     }
@@ -43,20 +49,20 @@ function SignUpForm() {
     // Basic regex for validating email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Check if any field is empty
     if (
-      !formData.userName ||
+      !formData.username ||
+      !formData.fullName ||
       !formData.password ||
-      !formData.email ||
       !formData.confirmPassword ||
       !formData.sellerType
     ) {
+      console.table(formData);
       toast.error("Please enter all fields");
       return false;
     }
 
     // Check if email is valid
-    if (!emailRegex.test(formData.email)) {
+    if (!emailRegex.test(formData.username)) {
       toast.error("Please enter a valid email address");
       return false;
     }
@@ -116,12 +122,12 @@ function SignUpForm() {
             <InputField
               label="Name"
               Icon={PersonIcon}
-              onChange={(e) => handleChange(e, "userName")}
+              onChange={(e) => handleChange(e, "fullName")}
             />
             <InputField
-              label="Email"
+              label="Username"
               Icon={EmailIcon}
-              onChange={(e) => handleChange(e, "email")}
+              onChange={(e) => handleChange(e, "username")}
             />
             <InputField
               label="Password"
@@ -144,7 +150,7 @@ function SignUpForm() {
               <DropdownComponent
                 title={"Seller Type"}
                 value={formData.sellerType}
-                data={["Individual", "Business"]}
+                data={sellerTypes}
                 onChange={handleDropdownChange}
               />
             </Box>
@@ -169,7 +175,7 @@ function SignUpForm() {
               onClick={() => handelSingUp()}
             />
           </Box>
-          <Box
+          {/* <Box
             display={"flex"}
             justifyContent={"center"}
             alignItems={"end"}
@@ -178,7 +184,7 @@ function SignUpForm() {
             <img src={AppleIcon} alt="apple logo" />
             <img src={GoogleIcon} alt="google logo" />
             <img src={FacebookIcon} alt="facebook logo" />
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     </>

@@ -1,4 +1,3 @@
-import Navbar from "../../components/navbar";
 import SignUpForm from "./components/SignUpForm";
 import Footer from "../../components/footer/Footer";
 
@@ -7,7 +6,6 @@ function SignUp() {
 
   return (
     <div>
-      <Navbar />
       <SignUpForm />
       <Footer year={currentYear} />
     </div>

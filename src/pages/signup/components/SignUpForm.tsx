@@ -1,35 +1,84 @@
-import { Box, Typography } from "@mui/material";
+import { Box, SelectChangeEvent, Typography } from "@mui/material";
 import InputField from "../../../components/inputField";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
-import StorefrontIcon from "@mui/icons-material/Storefront";
 import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
 import SimpleButton from "../../../components/simpleButton";
 import { useState } from "react";
 import { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import DropdownComponent from "../../../components/dropDown";
+import { toast } from "react-toastify";
+import { authSignUp } from "../../../api/AuthApi";
 
 function SignUpForm() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: "",
-    username: "",
+    userName: "",
+    email: "",
     password: "",
     confirmPassword: "",
     sellerType: "",
   });
   const handelSingUp = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      //   navigate("/login");
-      // }
+      // API call for sign up authSignUp
+      const response = await authSignUp({
+        username: formData.userName,
+        password: formData.password,
+        email: formData.email,
+      });
+      console.log(formData, response, "handleDropdownChange");
     } catch (error) {
       console.error(error, "error");
     }
   };
+
+  const validateForm = () => {
+    // Basic regex for validating email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if any field is empty
+    if (
+      !formData.userName ||
+      !formData.password ||
+      !formData.email ||
+      !formData.confirmPassword ||
+      !formData.sellerType
+    ) {
+      toast.error("Please enter all fields");
+      return false;
+    }
+
+    // Check if email is valid
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
+    // Check if password and confirmPassword match
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Password and confirmed password are not the same");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
     setFormData({ ...formData, [name]: e.target.value });
   };
+
+  const handleDropdownChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    setFormData({ ...formData, sellerType: value });
+  };
+
   return (
     <>
       <Box sx={{ marginX: "15px", mt: 5 }}>
@@ -67,12 +116,12 @@ function SignUpForm() {
             <InputField
               label="Name"
               Icon={PersonIcon}
-              onChange={(e) => handleChange(e, "fullName")}
+              onChange={(e) => handleChange(e, "userName")}
             />
             <InputField
-              label="User Name"
+              label="Email"
               Icon={EmailIcon}
-              onChange={(e) => handleChange(e, "username")}
+              onChange={(e) => handleChange(e, "email")}
             />
             <InputField
               label="Password"
@@ -86,11 +135,19 @@ function SignUpForm() {
               Icon={LockIcon}
               onChange={(e) => handleChange(e, "confirmPassword")}
             />
-            <InputField
-              label="Seller Type"
-              Icon={StorefrontIcon}
-              onChange={(e) => handleChange(e, "sellerType")}
-            />
+            <Box
+              sx={{
+                maxWidth: "470px",
+                margin: "10px auto 0 auto",
+              }}
+            >
+              <DropdownComponent
+                title={"Seller Type"}
+                value={formData.sellerType}
+                data={["Individual", "Business"]}
+                onChange={handleDropdownChange}
+              />
+            </Box>
           </Box>
           <Box
             sx={{

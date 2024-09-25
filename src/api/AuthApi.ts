@@ -1,5 +1,6 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { API_URL } from "../constants/config";
+import { SellerType } from "../type";
 
 interface AuthResponse {
   data(data: any): unknown;
@@ -7,10 +8,13 @@ interface AuthResponse {
   accessToken: string;
   refreshToken: string;
 }
+
 interface CreateUserRequest {
+  fullName: string;
   username: string;
   password: string;
-  email: string;
+  confirmPassword: string;
+  sellerType: SellerType | "";
 }
 interface AuthRequest {
   username: string;

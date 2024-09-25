@@ -4,7 +4,7 @@ import {
   BsFacebook,
   BsInstagram,
   BsTwitter,
-  BsGithub,
+  // BsGithub,
   BsDribbble,
 } from "react-icons/bs";
 
@@ -24,8 +24,8 @@ const Footer: React.FC<FooterProps> = ({ year }) => {
               </Typography>
               <Typography variant="body2">
                 Email: info@bazaraf.com
-                <br />
-                Phone: +123456789
+                {/* <br />
+                Phone: +123456789 */}
               </Typography>
             </Box>
           </Grid>
@@ -57,9 +57,9 @@ const Footer: React.FC<FooterProps> = ({ year }) => {
               <Link href="#" sx={{ mr: 2 }}>
                 <BsTwitter size={24} />
               </Link>
-              <Link href="#" sx={{ mr: 2 }}>
+              {/* <Link href="#" sx={{ mr: 2 }}>
                 <BsGithub size={24} />
-              </Link>
+              </Link> */}
               <Link href="#" sx={{ mr: 2 }}>
                 <BsDribbble size={24} />
               </Link>
@@ -68,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({ year }) => {
         </Grid>
         <Box sx={{ mt: 4, borderTop: "1px solid #ddd", pt: 2 }}>
           <Typography variant="body2" align="center">
-            &copy; {year} Flowbite™. All rights reserved.
+            &copy; {year} BazarAF™. All rights reserved.
           </Typography>
         </Box>
       </Container>

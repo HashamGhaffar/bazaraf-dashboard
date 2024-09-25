@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+
 import InputField from "../../../components/inputField";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
@@ -62,7 +63,6 @@ function LoginForm() {
       return;
     }
     try {
-      console.log(formData, "formData");
       const response = await authLoginUser(formData);
       if (response.accessToken) {
         dispatch(setAccessToken(response?.accessToken || ""));
@@ -75,10 +75,9 @@ function LoginForm() {
         toast.error("Something went wrong. Please try again later");
       }
     } catch (error) {
-      console.log(error, "error");
+      console.error(error, "error");
     }
   };
-
   return (
     <>
       <Box sx={{ marginX: "15px", mt: 5 }}>
@@ -100,9 +99,14 @@ function LoginForm() {
           >
             Login
           </Typography>
-          <Typography textAlign={"center"} fontSize={16} lineHeight={"24px"}>
-            Don't have an account? SignUp
-          </Typography>
+          <Box
+            sx={{ cursor: "pointer", "&:hover": { color: "#5BB28B" } }}
+            onClick={() => navigate("/SignUp")}
+          >
+            <Typography textAlign={"center"} fontSize={16} lineHeight={"24px"}>
+              Don't have an account? SignUp
+            </Typography>
+          </Box>
           <Box
             sx={{
               mt: 3,

@@ -6,11 +6,12 @@ import LockIcon from "@mui/icons-material/Lock";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { AppleIcon, GoogleIcon, FacebookIcon } from "../../../utils";
 import SimpleButton from "../../../components/simpleButton";
-// import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+
 function SignUpForm() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     username: "",
@@ -18,13 +19,12 @@ function SignUpForm() {
     confirmPassword: "",
     sellerType: "",
   });
-  console.log(formData, "formData");
   const handelSingUp = async () => {
     try {
       //   navigate("/login");
       // }
     } catch (error) {
-      console.log(error, "error");
+      console.error(error, "error");
     }
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>, name: string) => {
@@ -51,9 +51,14 @@ function SignUpForm() {
           >
             Sign up
           </Typography>
-          <Typography textAlign={"center"} fontSize={16} lineHeight={"24px"}>
-            Do have an account? Log in
-          </Typography>
+          <Box
+            sx={{ cursor: "pointer", "&:hover": { color: "#5BB28B" } }}
+            onClick={() => navigate("/login")}
+          >
+            <Typography textAlign={"center"} fontSize={16} lineHeight={"24px"}>
+              Do you have an account? Log in
+            </Typography>
+          </Box>
           <Box
             sx={{
               mt: 3,
@@ -71,11 +76,13 @@ function SignUpForm() {
             />
             <InputField
               label="Password"
+              type="password"
               Icon={LockIcon}
               onChange={(e) => handleChange(e, "password")}
             />
             <InputField
               label="Confirm Password"
+              type="password"
               Icon={LockIcon}
               onChange={(e) => handleChange(e, "confirmPassword")}
             />

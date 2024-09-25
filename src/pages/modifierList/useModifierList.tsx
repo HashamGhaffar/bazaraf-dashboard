@@ -96,7 +96,7 @@ const useModifierList = () => {
         setModifierListData({ modifierListId } as any, "DELETE");
       }
     } catch (e) {
-      console.log("An error occurred while deleting the modifier list", e);
+      console.error("An error occurred while deleting the modifier list", e);
     } finally {
       clearForm();
       setLoading(false);

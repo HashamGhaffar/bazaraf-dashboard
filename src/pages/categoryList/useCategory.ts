@@ -95,7 +95,7 @@ const useCategory = () => {
         notify("Category Deleted Successfully");
       }
     } catch (e) {
-      console.log("An error occurred while deleting the category", e);
+      console.error("An error occurred while deleting the category", e);
     } finally {
       clearForm();
       setLoading(false);

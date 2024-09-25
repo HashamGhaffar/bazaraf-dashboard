@@ -86,7 +86,7 @@ const useModifier = () => {
         setModifierData({ modifierId } as ModifierFormData, "DELETE");
       }
     } catch (e) {
-      console.log("An error occurred while deleting the modifier", e);
+      console.error("An error occurred while deleting the modifier", e);
     } finally {
       clearForm();
       setLoading(false);

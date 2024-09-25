@@ -64,7 +64,6 @@ function Table() {
           formData
         )
       : await createTable(accessToken, restaurant.restaurantId, formData);
-    console.log(response);
     setTableData(response, editingTable?.tableId ? "UPDATE" : "ADD");
     setFormData({
       tableNumber: "",

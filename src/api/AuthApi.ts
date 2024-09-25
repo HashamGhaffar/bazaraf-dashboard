@@ -54,7 +54,6 @@ const authSignUp = async (
   try {
     await axios.post(endpointUrl, createUserRequest);
     // Handle successful response
-    console.log("Sign up successful");
   } catch (error) {
     // Handle error
     handleError(error as AxiosError);
@@ -69,7 +68,6 @@ const authVerifyUser = async (
   try {
     await axios.post(endpointUrl, { username, code });
     // Handle successful response
-    console.log("User verified");
   } catch (error) {
     // Handle error
     handleError(error as AxiosError);

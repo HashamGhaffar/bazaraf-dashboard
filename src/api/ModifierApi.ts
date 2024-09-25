@@ -25,7 +25,6 @@ export const createModifier = async (
   }
 ): Promise<ModifierFormData | undefined> => {
   const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/modifiers`;
-  console.log("createModifierRequest", createModifierRequest);
   try {
     const response: AxiosResponse<ModifierFormData> = await axios.post(
       endpointUrl,

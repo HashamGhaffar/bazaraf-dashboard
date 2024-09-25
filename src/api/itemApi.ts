@@ -79,9 +79,7 @@ export const getAllItems = async (
   accessToken: string | null,
   restaurantId: string
 ): Promise<Item[] | undefined> => {
-  console.log(restaurantId, "restaurantId");
   const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/items`;
-  console.log(endpointUrl, "endpointUrl");
 
   try {
     const response: AxiosResponse<Item[]> = await axios.get(endpointUrl, {

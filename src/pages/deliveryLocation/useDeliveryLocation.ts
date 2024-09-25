@@ -100,7 +100,10 @@ const useDeliveryLocation = () => {
         );
       }
     } catch (e) {
-      console.log("An error occurred while deleting the delivery location", e);
+      console.error(
+        "An error occurred while deleting the delivery location",
+        e
+      );
     } finally {
       clearForm();
       setLoading(false);

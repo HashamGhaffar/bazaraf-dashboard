@@ -69,8 +69,6 @@ const ModifierList: React.FC = () => {
     (state: RootState) => state.auth
   );
 
-  console.log("modifierList", editingModifierList);
-
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -166,7 +164,7 @@ const ModifierList: React.FC = () => {
           );
         }
       } catch (e) {
-        console.log("An error occurred while creating the modifier list", e);
+        console.error("An error occurred while creating the modifier list", e);
         toast.error("Something went wrong");
       } finally {
         stopLoading();
@@ -177,7 +175,6 @@ const ModifierList: React.FC = () => {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       const res = await photoUpload(file, accessToken);
       setFormData({ ...formData, imageUrl: res.imageUrl });

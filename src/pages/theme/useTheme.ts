@@ -78,7 +78,7 @@ const useThemeApi = () => {
         setThemeData({ themeId } as Theme, "DELETE");
       }
     } catch (e) {
-      console.log("An error occurred while deleting the theme", e);
+      console.error("An error occurred while deleting the theme", e);
     } finally {
       clearForm();
       setLoading(false);

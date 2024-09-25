@@ -20,7 +20,6 @@ export const createModifierList = async (
   createModifierListRequest?: ModifierListFormData
 ): Promise<ModifierListFormData | undefined> => {
   const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/modifierList`;
-  console.log("createModifierListRequest", createModifierListRequest);
   try {
     const response: AxiosResponse<ModifierListFormData> = await axios.post(
       endpointUrl,
@@ -104,7 +103,6 @@ export const updateModifierList = async (
   modifierListId: string,
   updateModifierListRequest: ModifierListFormData
 ): Promise<ModifierListFormData | undefined> => {
-  console.log("updateModifierListRequest", updateModifierListRequest);
   const endpointUrl = `${API_URL}/api/v1/restaurants/${restaurantId}/modifierList/${modifierListId}`;
   try {
     const response = await axios.put(endpointUrl, updateModifierListRequest, {
@@ -114,7 +112,7 @@ export const updateModifierList = async (
     });
     return response.data;
   } catch (error) {
-    console.log("error", error);
+    console.error("error", error);
     handleError(error as AxiosError);
   }
 };

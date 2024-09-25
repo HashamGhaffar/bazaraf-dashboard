@@ -14,7 +14,6 @@ async function makeRequest<T>(
 ): Promise<ApiResponse<T>> {
   try {
     const response = await axiosInstance[method]<T>(url, body);
-    console.log(response, "response");
     return {
       data: response.data,
       status: response.status,

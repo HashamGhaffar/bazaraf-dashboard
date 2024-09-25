@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Box, Typography, Avatar } from "@mui/material";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import InputField from "../../components/inputField";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import DescriptionField from "../../components/descripationField";
 import SimpleButton from "../../components/simpleButton";
 import ListComponent from "../../components/ItemLists";
@@ -28,7 +28,6 @@ const Modifiers: React.FC = () => {
   const initialData = editingModifier?.modifier;
   const modifierId = editingModifier?.modifierId;
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log("initialData", initialData);
 
   const [formData, setFormData] = useState({
     name: initialData?.name || "",
@@ -36,7 +35,6 @@ const Modifiers: React.FC = () => {
     priceChange: initialData?.priceChange ?? 0,
     imageUrl: initialData?.imageUrl || "",
   });
-  console.log("formData.priceChange", formData.priceChange);
 
   useEffect(() => {
     setFormData({
@@ -115,7 +113,6 @@ const Modifiers: React.FC = () => {
   };
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       const res = await photoUpload(file, accessToken);
       setFormData({ ...formData, imageUrl: res.imageUrl });

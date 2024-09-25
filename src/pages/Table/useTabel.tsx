@@ -86,7 +86,7 @@ const useTable = () => {
         notify("Table Deleted Successfully");
       }
     } catch (e) {
-      console.log("An error occurred while deleting the table", e);
+      console.error("An error occurred while deleting the table", e);
     } finally {
       clearForm();
       setLoading(false);

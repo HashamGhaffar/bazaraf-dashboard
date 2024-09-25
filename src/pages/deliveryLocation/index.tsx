@@ -39,7 +39,6 @@ function DeliveryLocation() {
     deliveryFee: initialData?.deliveryFee || "",
     storeNextBy: initialData?.storeNextBy || "",
   });
-  console.log("initialData", initialData);
   useEffect(() => {
     setFormData({
       areaName: initialData?.areaName || "",
@@ -128,7 +127,7 @@ function DeliveryLocation() {
 
       stopLoading();
     } catch (error) {
-      console.log(
+      console.error(
         "An error occurred while creating the delivery location",
         error
       );

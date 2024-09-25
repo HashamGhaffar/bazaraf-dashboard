@@ -46,7 +46,6 @@ const CategoryList: React.FC = () => {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       const res = await photoUpload(file, accessToken);
       setFormData({ ...formData, imageUrl: res.imageUrl });

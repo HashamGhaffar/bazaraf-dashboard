@@ -9,7 +9,7 @@ import {
   Autocomplete,
   TextField,
 } from "@mui/material";
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import SloganIcon from "@mui/icons-material/EmojiObjects";
 import LicenseIcon from "@mui/icons-material/Assignment";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -24,12 +24,12 @@ import {
 } from "../../api/profileApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../type";
-import UpdateIcon from '@mui/icons-material/Update';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import UpdateIcon from "@mui/icons-material/Update";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { photoUpload } from "../../api/ThemeApi";
-import { currencies } from '../../utils/currencies';
+import { currencies } from "../../utils/currencies";
 const Profile: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
     imageUrl: "",
     brandImageUrl: "",
     brandColor: "",
-    currency: ""
+    currency: "",
   });
 
   const { restaurant, accessToken, user } = useSelector(
@@ -82,7 +82,6 @@ const Profile: React.FC = () => {
       user,
       restaurant?.restaurantId
     );
-    console.log(response);
     setRestaurantData(response);
     if (response) {
       setFormData({
@@ -105,7 +104,7 @@ const Profile: React.FC = () => {
         imageUrl: response.imageUrl,
         brandImageUrl: response.brandImageUrl,
         brandColor: response.brandColor,
-        currency: ""
+        currency: "",
       });
     }
   };
@@ -116,7 +115,6 @@ const Profile: React.FC = () => {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       const res = await photoUpload(file, accessToken);
       setFormData({ ...formData, brandImageUrl: res.imageUrl });
@@ -141,7 +139,6 @@ const Profile: React.FC = () => {
       date.setSeconds(0);
       date.setMilliseconds(0);
       const isoString = date.toISOString(); // "2024-07-31T03:59:30.532Z"
-      console.log("isoString", isoString);
       setFormData((prevFormData) => ({ ...prevFormData, [name]: isoString }));
     } else {
       setFormData((prevFormData) => ({
@@ -201,16 +198,14 @@ const Profile: React.FC = () => {
     if (res && !restaurantData) {
       toast.error("Please fill all the required fields");
     } else {
-      console.log("payload", formData);
-      const response = restaurantData
+      restaurantData
         ? await updateRestaurant(
-          accessToken,
-          user,
-          restaurant.restaurantId,
-          formData as any
-        )
+            accessToken,
+            user,
+            restaurant.restaurantId,
+            formData as any
+          )
         : createRestaurant(accessToken, user, formData);
-      console.log("Response", response);
       toast.success(
         restaurantData
           ? "Restaurant Updated Successfully"
@@ -312,8 +307,8 @@ const Profile: React.FC = () => {
               onChange={(_event, currency) => {
                 setFormData((prevFormData) => ({
                   ...prevFormData,
-                  currency: currency?.cc ?? ''
-                }))
+                  currency: currency?.cc ?? "",
+                }));
               }}
               sx={{ width: "100%", maxWidth: "470px", margin: "auto" }}
               renderInput={(params) => (
@@ -321,31 +316,31 @@ const Profile: React.FC = () => {
                   {...params}
                   label="Currency"
                   sx={{
-                    borderRadius: "10px",  // Set the border radius
+                    borderRadius: "10px", // Set the border radius
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "10px",  // Ensure the input box has rounded borders
-                      borderColor: "grey.400",  // Set the border color
+                      borderRadius: "10px", // Ensure the input box has rounded borders
+                      borderColor: "grey.400", // Set the border color
                       "& fieldset": {
-                        borderColor: "grey.400",  // Ensure the border color applies correctly
-                        borderWidth: "1px",  // Set the default border width
+                        borderColor: "grey.400", // Ensure the border color applies correctly
+                        borderWidth: "1px", // Set the default border width
                       },
                       "&:hover fieldset": {
-                        borderColor: "grey.400",  // Keep the border color consistent on hover
-                        borderWidth: "1px",  // Ensure the border width remains 1px on hover
+                        borderColor: "grey.400", // Keep the border color consistent on hover
+                        borderWidth: "1px", // Ensure the border width remains 1px on hover
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: "grey.400",  // Keep the border color consistent on focus
-                        borderWidth: "1px",  // Prevent the border width from increasing on focus
+                        borderColor: "grey.400", // Keep the border color consistent on focus
+                        borderWidth: "1px", // Prevent the border width from increasing on focus
                       },
                       "&:focus": {
-                        outline: "none",  // Remove the outline on focus
+                        outline: "none", // Remove the outline on focus
                       },
                     },
                     "& .MuiInputLabel-root": {
-                      color: "grey.500",  // Set the label color
+                      color: "grey.500", // Set the label color
                     },
                     "& .MuiInputLabel-root.Mui-focused": {
-                      color: "grey.500",  // Prevent the label color from changing on focus
+                      color: "grey.500", // Prevent the label color from changing on focus
                     },
                   }}
                 />
@@ -375,7 +370,6 @@ const Profile: React.FC = () => {
               onChange={(e) => handleChange(e, "deliveryTime")}
               value={formData.deliveryTime}
             />
-
           </Box>
           <Box
             sx={{
@@ -445,8 +439,6 @@ const Profile: React.FC = () => {
               </Grid>
             </Grid>
           </Box>
-
-
         </Box>
         <Box
           sx={{

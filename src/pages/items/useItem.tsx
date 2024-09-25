@@ -23,14 +23,11 @@ const useItem = () => {
   );
 
   const fetchData = useCallback(async () => {
-    console.log("fetchData", restaurant);
     if (!accessToken || !restaurant?.restaurantId) return;
 
     try {
       setLoading(true);
-      console.log(restaurant, "restaurant.restaurantId");
       const response = await getAllItems(accessToken, restaurant.restaurantId);
-      console.log(response, "response");
       response && setData(response || []);
     } catch (error) {
       console.error("Error fetching restaurant data:", error);
@@ -41,7 +38,6 @@ const useItem = () => {
   }, [accessToken, restaurant]);
 
   useEffect(() => {
-    console.log("useEffect");
     fetchData();
   }, [fetchData]);
 

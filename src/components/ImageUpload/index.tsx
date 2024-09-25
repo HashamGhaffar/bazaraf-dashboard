@@ -17,9 +17,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onChange, url }) => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    console.log(file);
     const res = await photoUpload(file, accessToken);
-    console.log(res);
 
     onChange(res.imageUrl);
     if (file) {

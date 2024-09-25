@@ -187,7 +187,6 @@ const Items: React.FC = () => {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log(file);
     if (file) {
       const res = await photoUpload(file, accessToken);
       setFormData({ ...formData, imageUrl: res.imageUrl });
@@ -368,7 +367,6 @@ const Items: React.FC = () => {
               Icon={EventAvailableIcon}
               value={formData.itemStatus}
               onChange={(value) => {
-                console.log("value==============", value);
                 setFormData({
                   ...formData,
                   itemStatus: value ? "AVAILABLE" : `OUT_OF_STOCK`,

@@ -191,7 +191,6 @@ const Discounts: React.FC = () => {
     }
   };
 
-  //console.log("restaurantId-> ",restaurant.restaurantId )
   useEffect(() => {
     if (editingDiscount) {
       setFormData({
@@ -348,6 +347,7 @@ const Discounts: React.FC = () => {
         sx={{
           maxWidth: "750px",
           margin: "0 auto",
+
           mt: 3,
           "@media (max-width: 500px)": {
             padding: "0px",

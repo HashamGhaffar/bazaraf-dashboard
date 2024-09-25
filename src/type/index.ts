@@ -150,6 +150,14 @@ export enum OrderType {
 
 // Order types ends
 
+// Auth types start
+
+export enum SellerType {
+  INDIVIDUAL = "INDIVIDUAL",
+  BUSINESS = "BUSINESS",
+}
+
+// Auth types start
 export interface Address {
   addressId: string;
   city: string;
